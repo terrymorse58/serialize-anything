@@ -1,0 +1,194 @@
+test-serialize.js typeof serialize: function
+
+Test1 (Date):
+  const src = new Date();
+  const dest1 = serialize(src);
+  const deser = deserialize(dest1);
+    src:   2020-02-09T02:40:30.301Z
+    ser:   {"_SerializeAnyType":"Date","_SAtimestamp":1581216030301}
+    deser: 2020-02-09T02:40:30.301Z
+
+Test2 (Map):
+  let src = new Map();
+  let key1 = "key1";
+  let key2 = {foo: "bar"};
+  src.set(key1, "key1 value");
+  src.set(key2, new Date());
+    src:   Map(2) {
+  'key1' => 'key1 value',
+  { foo: 'bar' } => 2020-02-09T02:40:30.302Z
+}
+    ser:   {"_SerializeAnyType":"Map","_SAkeyValuePairs":[["key1","key1 value"],[{"foo":"bar"},{"_SerializeAnyType":"Date","_SAtimestamp":1581216030302}]]} 
+
+    deser: Map(2) {
+  'key1' => 'key1 value',
+  { foo: 'bar' } => 2020-02-09T02:40:30.302Z
+}
+
+Test3 (Function):
+  let src = function foo (x) { return x + 1;};
+  let ser = serialize(src);
+  let deser = deserialize(ser);
+    src:   [Function: foo] 
+    ser:  {"_SerializeAnyType":"Function","_SAfunction":"function foo (x) { return x + 1;}"} 
+    deser: [Function: foo]
+    deser.toString():  function foo (x) { return x + 1;}
+    deser(10): 11
+
+Test4: (RegExp)
+  let src = [1,2,/abc/i];
+  let ser = serialize(src);
+  let deser = deserialize(ser);
+    src:  [ 1, 2, /abc/i ]
+    ser:  [1,2,{"_SerializeAnyType":"RegExp","_SAsource":"abc","_SAflags":"i"}]
+    deser: [ 1, 2, /abc/i ]
+
+Test5 (Int8Array):
+  let src5 = Int8Array.from([3, 4, 42]);
+  let dest5 = serialize(src5);
+  let dest5a = deserialize(src5);
+    src5:  Int8Array [ 3, 4, 42 ] 
+    dest5: {"_SerializeAnyType":"Int8Array","_SAvalues":[3,4,42]} 
+    dest5a: Int8Array [ 3, 4, 42 ]
+
+Test6 (Uint8Array):
+  let src6 = Uint8Array.from([3, 128, 64]);
+  let dest6 = serialize(src6);
+  let dest6a = deserialize(dest6);
+    src6:  Uint8Array [ 3, 128, 64 ] 
+    dest6: {"_SerializeAnyType":"Uint8Array","_SAvalues":[3,128,64]} 
+    dest6a: Uint8Array [ 3, 128, 64 ]
+
+Test7 (Int16Array):
+  let src7 = Int16Array.from([32, 128, 64]);
+  let dest7 = serialize(src7);
+  let dest7a = deserialize(dest7);
+    src7:  Int16Array [ 32, 128, 64 ] 
+    dest7: {"_SerializeAnyType":"Int16Array","_SAvalues":[32,128,64]} 
+    dest7a: Int16Array [ 32, 128, 64 ]
+
+Test8 (Uint16Array):
+  let src8 = Uint16Array.from([32, 128, 64]);
+  let dest8 = serialize(src8);
+  let dest8a = deserialize(dest8);
+    src8:  Uint16Array [ 32, 128, 64 ] 
+    dest8: {"_SerializeAnyType":"Uint16Array","_SAvalues":[32,128,64]} 
+    dest8a: Uint16Array [ 32, 128, 64 ]
+
+Test9 (Int32Array):
+  let src9 = Int32Array.from([32, 128, 64]);
+  let dest9 = serialize(src9);
+  let dest9a = deserialize(dest9);
+    src9:  Int32Array [ 32, 128, 64 ] 
+    dest9: {"_SerializeAnyType":"Int32Array","_SAvalues":[32,128,64]} 
+    dest9a: Int32Array [ 32, 128, 64 ]
+
+Test10 (Uint32Array):
+  let src10 = Uint32Array.from([32, 128, 64]);
+  let dest10 = serialize(src10);
+  let dest10a = deserialize(dest10);
+    src10:  Uint32Array [ 32, 128, 64 ] 
+    dest10: {"_SerializeAnyType":"Uint32Array","_SAvalues":[32,128,64]} 
+    dest10a: Uint32Array [ 32, 128, 64 ]
+
+Test11 (Float32Array):
+  let src11 = Float32Array.from([32, 128, 64]);
+  let dest11 = serialize(src11);
+  let dest11a = deserialize(dest11);
+    src11:  Float32Array [ 32, 128, 64 ] 
+    dest11: {"_SerializeAnyType":"Float32Array","_SAvalues":[32,128,64]} 
+    dest11a: Float32Array [ 32, 128, 64 ]
+
+Test12 (Float64Array):
+  let src12 = Float64Array.from([32, 128, 64]);
+  let dest12 = serialize(src12);
+  let dest12a = deserialize(dest12);
+    src12:  Float64Array [ 32, 128, 64 ] 
+    dest12: {"_SerializeAnyType":"Float64Array","_SAvalues":["32","128","64"]} 
+    dest12a: Float64Array [ 32, 128, 64 ]
+
+Test13 (BigInt64Array):
+  let src = BigInt64Array.from([32, 128, 64]);
+  let ser = serialize(src);
+  let deser = deserialize(ser);
+    src:   BigInt64Array [ 3n, 4n, 42n ]
+    ser:   {"_SerializeAnyType":"BigInt64Array","_SAvalues":["3","4","42"]}
+    deser: BigInt64Array [ 3n, 4n, 42n ]
+
+Test14 (BigUint64Array):
+  let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
+  let ser = serialize(src);
+  let deser = deserialize(ser);
+    src:   BigUint64Array [ 3000000000000000000n, 4n, 42n ]
+    ser:   {"_SerializeAnyType":"BigUint64Array","_SAvalues":["3000000000000000000","4","42"]}
+    deser: BigUint64Array [ 3000000000000000000n, 4n, 42n ]
+
+Test14a (ArrayBuffer):
+  let aBuf = new ArrayBuffer(8)
+  let src = new Uint8Array(aBuf)
+  src.set([1, 2, 3], 3);
+  let ser = serialize(aBuf)
+  let deser = deserialize(ser);
+    aBuf:  ArrayBuffer {
+  [Uint8Contents]: <00 00 00 01 02 03 00 00>,
+  byteLength: 8
+}
+*** TEST FAILED: Error: serializing untyped ArrayBuffer not supported
+
+Test15 (Set):
+  let src = new Set([1,2,"3",{createdAt: new Date()}]);
+  let ser = serialize(src);
+  let deser = deserialize(ser);
+    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-09T02:40:30.309Z } }
+    ser:   {"_SerializeAnyType":"Set","_SAvalues":[1,2,"3",{"createdAt":{"_SerializeAnyType":"Date","_SAtimestamp":1581216030309}}]}
+    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-09T02:40:30.309Z } }
+
+Test16 (WeakSet):
+  let src = new WeakSet();
+  let obj = {value: "in the set"}
+  src.add(obj);
+    src:  WeakSet { <items unknown> }
+*** TEST FAILED: Error: serialize WeakSet not supported
+
+Test17 (WeakMap):
+  let src = new WeakMap();
+  let obj = { foo: "I am foo" };
+  src.set(obj, 42);
+    src:  WeakMap { <items unknown> }
+*** TEST FAILED: Error: serialize WeakMap not supported
+
+Test18 (Buffer):
+  let src = Buffer.from("hello world");
+    src:  <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+    ser:   {"_SerializeAnyType":"Buffer","_SAutf8String":"hello world"}
+    deser: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+
+Test19 (CustomObject):
+  class CustomObject extends Object {
+    custom () {return "I am CustomObject";}
+  }
+  let src = new CustomObject();
+  src.key = "value";
+  src.key2 = [1,2, new Date()];
+    src:  CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T02:40:30.311Z ] }
+    src.custom():  I am CustomObject
+    ser:   {"_SerializeAnyType":"_SACustomObject","_SAconstructorName":"CustomObject","_SAobject":{"key":"value","key2":[1,2,{"_SerializeAnyType":"Date","_SAtimestamp":1581216030311}]}}
+    deser: CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T02:40:30.311Z ] }
+
+Test20 (CustomArray):
+  class CustomArray extends Array {
+    custom () {return "I am CustomArray";}
+  }  let src = CustomArray.from([1,2,"foo",{key: [1,2,3, /abc/g]}]);
+    src:  CustomArray [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+    src.custom():  I am CustomArray
+    ser:   {"_SerializeAnyType":"_SACustomArray","_SAconstructorName":"CustomArray","_SAvalues":[1,2,"foo",{"key":[1,2,3,{"_SerializeAnyType":"RegExp","_SAsource":"abc","_SAflags":"g"}]}]}
+    deser: CustomArray [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+    deser[3].key: [ 1, 2, 3, /abc/g ]
+
+End of test.
+
+Errors:  [
+  'Test14a Error: serializing untyped ArrayBuffer not supported',
+  'Test16 Error: serialize WeakSet not supported',
+  'Test17 Error: serialize WeakMap not supported'
+]
