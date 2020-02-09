@@ -2,15 +2,17 @@ test-serialize.js typeof serialize: function
 
 Test1 (Date):
   const src = new Date();
-    src:   2020-02-09T16:18:05.671Z
+    src:   2020-02-09T18:52:49.000Z
     ser:   {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1581265085671
+    "_SAtimestamp": 1581274369000
   }
 }
-    deser: 2020-02-09T16:18:05.671Z
+    deser: Date Sun Feb 09 2020 10:52:49 GMT-0800 (Pacific Standard Time)
+    JSON:  2020-02-09T18:52:49.000Z
+    json: String 2020-02-09T18:52:49.000Z
 
 Test2 (Map):
   let src = new Map();
@@ -20,7 +22,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-09T16:18:05.673Z
+  { foo: 'bar' } => 2020-02-09T18:52:49.004Z
 }
     ser:   {
   "_Serialize_Any_Encoded": true,
@@ -37,7 +39,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581265085673
+          "_SAtimestamp": 1581274369004
         }
       ]
     ]
@@ -46,8 +48,9 @@ Test2 (Map):
 
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-09T16:18:05.673Z
+  { foo: 'bar' } => 2020-02-09T18:52:49.004Z
 }
+    JSON:  {}
 
 Test3 (Function):
   let src = function foo (x) { return x + 1;};
@@ -63,6 +66,7 @@ Test3 (Function):
     deser: [Function: foo]
     deser.toString():  function foo (x) { return x + 1;}
     deser(10): 11
+    *** JSON Error SyntaxError: Unexpected token u in JSON at position 0
 
 Test4: (RegExp)
   let src = [1,2,/abc/i];
@@ -80,6 +84,7 @@ Test4: (RegExp)
   ]
 }
     deser: [ 1, 2, /abc/i ]
+    JSON:  [ 1, 2, {} ]
 
 Test5 (Int8Array):
   let src = Int8Array.from([3, 4, 42]);
@@ -96,6 +101,7 @@ Test5 (Int8Array):
   }
 }
     deser: Int8Array [ 3, 4, 42 ]
+    JSON:  { '0': 3, '1': 4, '2': 42 }
 
 Test6 (Uint8Array):
   let src = Uint8Array.from([3, 128, 64]);
@@ -112,6 +118,7 @@ Test6 (Uint8Array):
   }
 }
     deser: Uint8Array [ 3, 128, 64 ]
+    JSON:  { '0': 3, '1': 128, '2': 64 }
 
 Test7 (Int16Array):
   let src = Int16Array.from([32, 128, 64]);
@@ -128,6 +135,7 @@ Test7 (Int16Array):
   }
 }
     deser: Int16Array [ 32, 128, 64 ]
+    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test8 (Uint16Array):
   let src = Uint16Array.from([32, 128, 64]);
@@ -144,6 +152,7 @@ Test8 (Uint16Array):
   }
 }
     deser: Uint16Array [ 32, 128, 64 ]
+    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test9 (Int32Array):
   let src = Int32Array.from([32, 128, 64]);
@@ -160,6 +169,7 @@ Test9 (Int32Array):
   }
 }
     deser: Int32Array [ 32, 128, 64 ]
+    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test10 (Uint32Array):
   let src = Uint32Array.from([32, 128, 64]);
@@ -176,6 +186,7 @@ Test10 (Uint32Array):
   }
 }
     deser: Uint32Array [ 32, 128, 64 ]
+    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test11 (Float32Array):
   let src = Float32Array.from([32, 128, 64]);
@@ -192,6 +203,7 @@ Test11 (Float32Array):
   }
 }
     deser: Float32Array [ 32, 128, 64 ]
+    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test12 (Float64Array):
   let src = Float64Array.from([32, 128, 64]);
@@ -208,6 +220,7 @@ Test12 (Float64Array):
   }
 }
     deser: Float64Array [ 32, 128, 64 ]
+    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test13 (BigInt64Array):
   let src = BigInt64Array.from([32, 128, 64]);
@@ -224,6 +237,7 @@ Test13 (BigInt64Array):
   }
 }
     deser: BigInt64Array [ 3n, 4n, 42n ]
+    *** JSON Error TypeError: Do not know how to serialize a BigInt
 
 Test14 (BigUint64Array):
   let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
@@ -239,6 +253,7 @@ Test14 (BigUint64Array):
     ]
   }
 }
+    *** JSON Error TypeError: Do not know how to serialize a BigInt
     deser: BigUint64Array [ 3000000000000000000n, 4n, 42n ]
 
 Test14a (ArrayBuffer):
@@ -259,10 +274,11 @@ Test14a (ArrayBuffer):
   [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
   byteLength: 8
 }
+    JSON:  { '0': 1, '1': 2, '2': 3, '3': 4, '4': 5, '5': 127, '6': 0, '7': 0 }
 
 Test15 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-09T16:18:05.682Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-09T18:52:49.014Z } }
     ser:   {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -274,13 +290,14 @@ Test15 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1581265085682
+          "_SAtimestamp": 1581274369014
         }
       }
     ]
   }
 }
-    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-09T16:18:05.682Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-09T18:52:49.014Z } }
+    JSON:  {}
 
 Test16 (WeakSet):
   let src = new WeakSet();
@@ -307,6 +324,14 @@ Test18 (Buffer):
   }
 }
     deser: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+    JSON:  {
+  type: 'Buffer',
+  data: [
+    104, 101, 108, 108,
+    111,  32, 119, 111,
+    114, 108, 100
+  ]
+}
 
 Test19 (CustomObject):
   class CustomObject extends Object {
@@ -315,7 +340,7 @@ Test19 (CustomObject):
   let src = new CustomObject();
   src.key = "value";
   src.key2 = [1,2, new Date()];
-    src:  CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T16:18:05.684Z ] }
+    src:  CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T18:52:49.017Z ] }
     src.custom():  I am a custom Object
     ser:   {
   "_Serialize_Any_Encoded": true,
@@ -329,16 +354,17 @@ Test19 (CustomObject):
         2,
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581265085684
+          "_SAtimestamp": 1581274369017
         }
       ]
     }
   }
 }
-    deser: CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T16:18:05.684Z ] }
+    deser: CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T18:52:49.017Z ] }
     deser.custom():  I am a custom Object
+    JSON:  { key: 'value', key2: [ 1, 2, '2020-02-09T18:52:49.017Z' ] }
 
-Test20 (CustomArray):
+Test20 (CustomArray with RegExp):
   class CustomArray extends Array {
     custom () {return "I am a custom Array";}
   }
@@ -371,6 +397,7 @@ Test20 (CustomArray):
 }
     deser: CustomArray [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
     deser.custom(): I am a custom Array
+    JSON:  [ 1, 2, 'foo', { key: [ 1, 2, 3, {} ] } ]
 
 Test21 (Array containing BigInt):
   let src = [1, 2, 3000000000n];
@@ -387,6 +414,34 @@ Test21 (Array containing BigInt):
   ]
 }
     deser: [ 1, 2, 3000000000n ]
+    *** JSON Error TypeError: Do not know how to serialize a BigInt
+
+Test22 (Object containing undefined prop):
+  let src = {foo: "bar", notSet: undefined};
+    src:  { foo: 'bar', notSet: undefined }
+    ser:   {
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "foo": "bar",
+    "notSet": {
+      "_SAType": "undef"
+    }
+  }
+}
+    deser: { foo: 'bar', notSet: undefined }
+    JSON:  { foo: 'bar' }
+
+Test23 (undefined variable):
+  let src = undefined;
+    src:  undefined
+    ser:   {
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "_SAType": "undef"
+  }
+}
+    deser: undefined
+    *** JSON Error SyntaxError: Unexpected token u in JSON at position 0
 
 End of test.
 

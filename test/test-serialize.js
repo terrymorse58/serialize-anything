@@ -34,10 +34,12 @@ console.log(
     const ser = serialize(src, options);
     console.log('    ser:  ',ser);
     const deser = deserialize(ser);
-    console.log('    deser:', deser);
+    console.log('    deser: ' + deser.constructor.name + ' ' + deser);
     if (src.getTime() !== deser.getTime()) {
       throw 'Error: destination date does not match source date';
     }
+    let jsr = jsonTest(src);
+    console.log('    json: ' + jsr.constructor.name + ' ' + jsr);
   } catch (err) {
     console.log('*** TEST1 FAILED:', err);
     errors.push('Test1 ' + err.toString());
@@ -67,6 +69,7 @@ console.log(
     let deser = deserialize(ser);
     console.log(
       '    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST2 FAILED:', err);
     errors.push('Test2 ' + err.toString());
@@ -94,6 +97,7 @@ console.log(
     if (deser(10) !== 11) {
       throw 'Error deserialized function returned wrong result';
     }
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST3 FAILED:', err);
     errors.push('Test3 ' + err.toString());
@@ -113,6 +117,7 @@ console.log(
     console.log('    ser: ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED error:', err);
     errors.push('Test4 ' + err.toString());
@@ -132,6 +137,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test5 ' + err.toString());
@@ -151,6 +157,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test6 ' + err.toString());
@@ -170,6 +177,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test7 ' + err.toString());
@@ -189,6 +197,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test8 ' + err.toString());
@@ -208,6 +217,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test9 ' + err.toString());
@@ -226,6 +236,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test10 ' + err.toString());
@@ -245,6 +256,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test11 ' + err.toString());
@@ -264,6 +276,7 @@ console.log(
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test12 ' + err.toString());
@@ -275,38 +288,37 @@ console.log(
   '  let src = BigInt64Array.from([32, 128, 64]);'
 );
 {
-  {
-    let src = BigInt64Array.from([3n, 4n, 42n]);
-    console.log('    src:  ', src);
-    try {
-      let ser = serialize(src, options);
-      console.log('    ser:  ', ser);
-      let deser = deserialize(ser);
-      console.log('    deser:', deser);
-    } catch (err) {
-      console.log('*** TEST FAILED:', err);
-      errors.push('Test13 ' + err.toString());
-    }
+  let src = BigInt64Array.from([3n, 4n, 42n]);
+  console.log('    src:  ', src);
+  try {
+    let ser = serialize(src, options);
+    console.log('    ser:  ', ser);
+    let deser = deserialize(ser);
+    console.log('    deser:', deser);
+    jsonTest(src);
+  } catch (err) {
+    console.log('*** TEST FAILED:', err);
+    errors.push('Test13 ' + err.toString());
   }
 }
-// BigUint64Array
+
+  // BigUint64Array
 console.log('\nTest14 (BigUint64Array):');
 console.log(
   '  let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);'
 );
 {
-  {
-    let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
-    console.log('    src:  ', src);
-    try {
-      let ser = serialize(src, options);
-      console.log('    ser:  ', ser);
-      let deser = deserialize(ser);
-      console.log('    deser:', deser);
-    } catch (err) {
-      console.log('*** TEST FAILED:', err);
-      errors.push('Test14 ' + err.toString());
-    }
+  let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
+  console.log('    src:  ', src);
+  try {
+    let ser = serialize(src, options);
+    console.log('    ser:  ', ser);
+    let deser = deserialize(ser);
+    jsonTest(src);
+    console.log('    deser:', deser);
+  } catch (err) {
+    console.log('*** TEST FAILED:', err);
+    errors.push('Test14 ' + err.toString());
   }
 }
 
@@ -330,6 +342,7 @@ console.log(`\nTest14a (ArrayBuffer):`);
     console.log('    ser:', ser);
     let deser = deserialize(ser);
     console.log('    deser: ', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test14a ' + err.toString());
@@ -349,6 +362,7 @@ console.log(`\nTest15 (Set):`);
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test15 ' + err.toString())
@@ -372,6 +386,7 @@ console.log(`\nTest16 (WeakSet):`);
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err)
     errors.push('Test16 ' + err.toString())
@@ -395,6 +410,7 @@ console.log(`\nTest17 (WeakMap):`);
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err)
     errors.push('Test17 ' + err.toString())
@@ -414,6 +430,7 @@ console.log(`\nTest18 (Buffer):`);
     console.log('    ser:  ', ser);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err)
     errors.push('Test18 ' + err.toString())
@@ -445,6 +462,7 @@ class CustomObject extends Object {
     let deser = deserializeCustom(ser);
     console.log('    deser:', deser);
     console.log('    deser.custom(): ', deser.custom());
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test19 ' + err.toString())
@@ -452,7 +470,7 @@ class CustomObject extends Object {
 }
 
 // CustomArray
-console.log(`\nTest20 (CustomArray):`);
+console.log(`\nTest20 (CustomArray with RegExp):`);
 class CustomArray extends Array {
   custom () {return "I am a custom Array";}
 }
@@ -472,6 +490,7 @@ class CustomArray extends Array {
     let deser = deserializeCustom(ser);
     console.log('    deser:', deser);
     console.log('    deser.custom():', deser.custom());
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test20 ' + err.toString())
@@ -491,12 +510,62 @@ console.log(`\nTest21 (Array containing BigInt):`);
     console.log('    ser:  ', ser);
     let deser = deserializeCustom(ser);
     console.log('    deser:', deser);
+    jsonTest(src);
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test21 ' + err.toString())
   }
 }
 
+// Object containing undefined prop
+console.log(`\nTest22 (Object containing undefined prop):`);
+{
+  console.log(
+    '  let src = {foo: "bar", notSet: undefined};'
+  );
+  let src = {foo: "bar", notSet: undefined};
+  console.log('    src: ', src);
+  try {
+    let ser = serialize(src, options);
+    console.log('    ser:  ', ser);
+    let deser = deserializeCustom(ser);
+    console.log('    deser:', deser);
+    jsonTest(src);
+  } catch (err) {
+    console.log('*** TEST FAILED:', err);
+    errors.push('Test22 ' + err.toString())
+  }
+}
+
+// undefined variable
+console.log(`\nTest23 (undefined variable):`);
+{
+  console.log(
+    '  let src = undefined;'
+  );
+  let src = undefined;
+  console.log('    src: ', src);
+  try {
+    let ser = serialize(src, options);
+    console.log('    ser:  ', ser);
+    let deser = deserializeCustom(ser);
+    console.log('    deser:', deser);
+    jsonTest(src);
+  } catch (err) {
+    console.log('*** TEST FAILED:', err);
+    errors.push('Test23 ' + err.toString())
+  }
+}
+
+function jsonTest(src) {
+  try {
+    const result = JSON.parse(JSON.stringify(src));
+    console.log('    JSON: ', result);
+    return result;
+  } catch (err) {
+    console.log('    *** JSON Error ' + err.toString());
+  }
+}
 
 
 console.log("\nEnd of test.");

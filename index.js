@@ -151,17 +151,25 @@ function deserialize (objJSON, prototyper = undefined) {
 const isPrimitive = (item) => {
   let type = typeof item;
   return type === 'number' || type === 'string' || type === 'boolean'
-    || type === 'undefined' || type === 'symbol'
-    || item === null;
+    || type === 'symbol' || item === null;
 };
 
 
 const objectType = (obj) => {
 
+  // console.log('        objectType() obj:',obj);
+
   // match primitives right away
   if (isPrimitive(obj) || !obj instanceof Object) {
     // console.log(`objectType returning "primitive"`);
     return 'primitive';
+  }
+
+  // force undefined to a serializable type
+  // because JSON.stringify strips out properties set to undefined
+  if (typeof obj === 'undefined') {
+    // console.log('        objectType returning "undef"');
+    return 'undef';
   }
 
   // force BigInt to a serializable type
@@ -226,7 +234,7 @@ const objectBehaviors = {
       }
     },
     setValue: (array, elInfo) => {
-     // console.log('setting array value for elInfo:',elInfo);
+      // console.log('setting array value for elInfo:',elInfo);
       array[elInfo.key] = elInfo.value;
     }
   },
@@ -272,6 +280,18 @@ const objectBehaviors = {
     deserialize: (srcSer) => {
       return new Function('return ' + srcSer._SAfunction)();
     },
+  },
+  'undef': {
+    serialize: (src) => {
+      return {
+        _SAType: 'undef'
+      }
+    },
+  },
+  'undef_Serialized': {
+    deserialize: (srcSer) => {
+      return undefined;
+    }
   }
 };
 
