@@ -1,8 +1,13 @@
 {
-  "name": "serialize-all",
-  "version": "0.1.0",
-  "description": "serialize and de-serialize all JavaScript data typess",
+  "name": "serialize-anything",
+  "version": "0.1.1",
+  "description": "serialize and de-serialize any JavaScript data",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terrymorse58/serialize-anything.git"
+  },
+
   "scripts": {
     "test": "node test/test-serialize.js > test/result-serialize.txt"
   },

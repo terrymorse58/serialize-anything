@@ -2,55 +2,86 @@
 
 const deepCopy = require('deep-copy-all');
 
+const defaultOptions = {
+  maxDepth: 20,
+  pretty: false
+};
 
-function serialize (item) {
-  //console.log("serialize item:", item);
+/**
+ * serialize the input
+ * @param {*} item - the item to serialize
+ * @param [options]
+ * @param {number} options.maxDepth - maximum object depth
+ * @param {boolean} options.pretty - pretty output
+ * @return {string}
+ */
+function serialize (item, options = undefined) {
+  options = options || defaultOptions;
+  if (typeof options.maxDepth === 'undefined') {
+    options.maxDepth = defaultOptions.maxDepth;
+  }
+  if (typeof options.pretty === 'undefined') {
+    options.pretty = defaultOptions.pretty;
+  }
 
   let iCopy = deepCopy(item);
 
-  return JSON.stringify(serializeObject(iCopy, 0));
-}
+  iCopy = serializeObject(iCopy, options, 0);
 
-// recursively serialize object in-place (depth first)
-function serializeObject (obj, depth) {
-  depth++;
+  const saWrapper = {
+    _Serialize_Any_Encoded: true,
+    _SA_Content: iCopy
+  };
 
-  let str = "    ";
-  for (let i=0; i<depth; i++) {
-    str += '  ';
+  return options.pretty
+    ? JSON.stringify(saWrapper, null, 2)
+    : JSON.stringify(saWrapper);
+
+  // recursively serialize object in-place (depth first)
+  function serializeObject (obj, options, depth) {
+    depth++;
+
+    if (depth > options.maxDepth) {
+      throw 'Error maximum depth exceeded - possible circular reference';
+    }
+
+    // let str = "    ";
+    // for (let i=0; i<depth; i++) {
+    //   str += '  ';
+    // }
+    //console.log(str + 'serializeObject obj:', obj);
+
+    const objType = objectType(obj);
+
+    //console.log(str + '  serializeObject objType:', objType);
+
+    const objBehaviors = objectBehaviors[objType];
+    const objSerialize = objBehaviors.serialize;
+    const objIterate = objBehaviors.iterate;
+    const objSetChild = objBehaviors.setValue;
+
+    if (objIterate) {
+      objIterate(obj, (elInfo) => {
+        const elType = elInfo.type;
+        const elBehaviors = objectBehaviors[elType];
+        const elSerialize = elBehaviors.serialize;
+        const elIterate = elBehaviors.iterate;
+        if (elIterate) {
+          elInfo.value = serializeObject(elInfo.value, options, depth);
+        } else if (elSerialize) {
+          //console.log(str + '  serializing child:', elInfo.value, '...');
+          elInfo.value = elSerialize(elInfo.value);
+          objSetChild(obj, elInfo);
+          //console.log(str + '  child is now:', elInfo.value);
+        }
+      });
+    }
+    if (objSerialize) {
+      obj = objSerialize(obj);
+    }
+    return obj;
   }
-  //console.log(str + 'serializeObject obj:', obj);
 
-
-  const objType = objectType(obj);
-
-  //console.log(str + '  serializeObject objType:', objType);
-
-  const objBehaviors = objectBehaviors[objType];
-  const objSerialize = objBehaviors.serialize;
-  const objIterate = objBehaviors.iterate;
-  const objSetChild = objBehaviors.setValue;
-
-  if (objIterate) {
-    objIterate(obj, (elInfo) => {
-      const elType = elInfo.type;
-      const elBehaviors = objectBehaviors[elType];
-      const elSerialize = elBehaviors.serialize;
-      const elIterate = elBehaviors.iterate;
-      if (elIterate) {
-        elInfo.value = serializeObject(elInfo.value, depth);
-      } else if (elSerialize) {
-        //console.log(str + '  serializing child:', elInfo.value, '...');
-        elInfo.value = elSerialize(elInfo.value);
-        objSetChild(obj, elInfo);
-        //console.log(str + '  child is now:', elInfo.value);
-      }
-    });
-  }
-  if (objSerialize) {
-    obj = objSerialize(obj);
-  }
-  return obj;
 }
 
 function deserialize (objJSON, prototyper = undefined) {
@@ -58,70 +89,72 @@ function deserialize (objJSON, prototyper = undefined) {
 
   let iCopy = JSON.parse(objJSON);
 
+  // check for our wrapper
+  const iCopyType = objectType(iCopy);
+  if (iCopyType !== 'Object' || !iCopy._Serialize_Any_Encoded) {
+    throw 'Error: object was not serialized by serialize-any';
+  }
+
+  // strip off our wrapper
+  iCopy = iCopy._SA_Content;
+
   return deserializeObject(iCopy, prototyper, 0);
-}
 
-function deserializeObject(obj, prototyper, depth) {
-  depth++;
+  // recursively deserialize the object (breadth first)
+  function deserializeObject (obj, prototyper, depth) {
+    depth++;
 
-  let str = "    ";
-  for (let i=0; i<depth; i++) {
-    str += '  ';
+    // debug
+    let str = '    ';
+    for (let i = 0; i < depth; i++) {
+      str += '  ';
+    }
+    // console.log(str + 'deserializeObject obj:', obj);
+
+    let objType = objectType(obj);
+
+    // console.log(str + '  deserializeObject object type:', objType);
+
+    let objBehaviors = objectBehaviors[objType];
+    const objDeserialize = objBehaviors.deserialize;
+
+    if (objDeserialize) {
+      obj = objDeserialize(obj, prototyper);
+      objType = objectType(obj);
+      objBehaviors = objectBehaviors[objType];
+    }
+
+    const objIterate = objBehaviors.iterate;
+
+    if (objIterate) {
+      const objSetChild = objBehaviors.setValue;
+      objIterate(obj, (elInfo) => {
+        const elType = elInfo.type;
+        const elBehaviors = objectBehaviors[elType];
+        const elDeserialize = elBehaviors.deserialize;
+        const elIterate = elBehaviors.iterate;
+        if (elIterate) {
+          elInfo.value = deserializeObject(elInfo.value, prototyper, depth);
+        } else if (elDeserialize) {
+          // console.log(str + '  deserializing child:', elInfo.value, '...');
+          elInfo.value = elDeserialize(elInfo.value, prototyper);
+          objSetChild(obj, elInfo);
+          // console.log(str + '  child is now:', elInfo.value);
+        }
+      });
+    }
+    return obj;
   }
-  // console.log(str + 'deserializeObject obj:', obj);
-
-  const objType = objectType(obj);
-
-  // console.log(str + '  deserializeObject object type:', objType);
-
-  const objBehaviors = objectBehaviors[objType];
-  const objDeserialize = objBehaviors.deserialize;
-  const objIterate = objBehaviors.iterate;
-  const objSetChild = objBehaviors.setValue;
-
-  if (objIterate) {
-    objIterate(obj, (elInfo) => {
-      const elType = elInfo.type;
-      const elBehaviors = objectBehaviors[elType];
-      const elDeserialize = elBehaviors.deserialize;
-      const elIterate = elBehaviors.iterate;
-      if (elIterate) {
-        elInfo.value = deserializeObject(elInfo.value, prototyper, depth);
-      } else if (elDeserialize) {
-        // console.log(str + '  deserializing child:', elInfo.value, '...');
-        elInfo.value = elDeserialize(elInfo.value, prototyper);
-        objSetChild(obj, elInfo);
-        // console.log(str + '  child is now:', elInfo.value);
-      }
-    });
-  }
-  if (objDeserialize) {
-    obj = objDeserialize(obj, prototyper);
-  }
-  return obj;
-
 }
 
 // return true if the item is a primitive data type
 const isPrimitive = (item) => {
   let type = typeof item;
   return type === 'number' || type === 'string' || type === 'boolean'
-    || type === 'undefined' || type === 'bigint' || type === 'symbol'
+    || type === 'undefined' || type === 'symbol'
     || item === null;
-}
+};
 
-
-/**
- * define object behaviors
- * Note: The order is important - custom objects must be listed BEFORE
- *       the standard JavaScript Object.
- * @namespace
- * @property {*} type - object data "type"
- * @property {function} [addElement] - add a single element to object
- * @property {function} [makeEmpty] - make an empty object
- * @property {function} [iterate] - iterate over objects elements
- *                                  with callback({key,value,"type"})
- */
 
 const objectType = (obj) => {
 
@@ -131,14 +164,20 @@ const objectType = (obj) => {
     return 'primitive';
   }
 
-  // return type of custom serialized objects
-  if (obj._SerializeAnyType && obj._SerializeAnyType.includes('_SACustom')) {
-    return obj._SerializeAnyType;
+  // force BigInt to a serializable type
+  // because JSON.stringify throws error on BigInt
+  if (typeof obj === 'bigint') {
+    return 'BigInt';
   }
 
-  // return type of serialized object
-  if (typeof obj._SerializeAnyType !== 'undefined') {
-    return obj._SerializeAnyType + '_Serialized';
+  // return type of custom serialized objects
+  if (obj._SAType && obj._SAType.includes('_SACustom')) {
+    return obj._SAType;
+  }
+
+  // return type of serialized regular objects
+  if (typeof obj._SAType !== 'undefined') {
+    return obj._SAType + '_Serialized';
   }
 
   // try to match object constructor name
@@ -158,27 +197,20 @@ const objectType = (obj) => {
 
 /**
  * define object behaviors
- * Note: The order is important - custom objects must be listed BEFORE
- *       the standard JavaScript Object.
- * @namespace
- * @property {*} type - object data "type"
- * @property {function} [addElement] - add a single element to object
- * @property {function} [makeEmpty] - make an empty object
- * @property {function} [iterate] - iterate over objects elements
- *                                  with callback({key,value,"type"})
  */
 const objectBehaviors = {
   "Array": {
     type: Array,
     serialize: (src) => {
-      if (src.constructor.name === 'Array') {
-        return src;
-      } else {
+      // only serialize custom arrays
+      if (src.constructor.name !== 'Array') {
         return {
-          _SerializeAnyType: "_SACustomArray",
+          _SAType: "_SACustomArray",
           _SAconstructorName: src.constructor.name,
           _SAvalues: Array.from(src)
         }
+      } else {
+        return src;
       }
     },
     iterate: (array, callback) => {
@@ -202,7 +234,7 @@ const objectBehaviors = {
     type: Date,
     serialize: (srcDate) => {
       return {
-        _SerializeAnyType: 'Date',
+        _SAType: 'Date',
         _SAtimestamp: srcDate.getTime()
       };
     }
@@ -216,7 +248,7 @@ const objectBehaviors = {
     type: RegExp,
     serialize: (regex) => {
       return {
-        _SerializeAnyType: 'RegExp',
+        _SAType: 'RegExp',
         _SAsource: regex.source,
         _SAflags: regex.flags
       }
@@ -231,7 +263,7 @@ const objectBehaviors = {
     type: Function,
     serialize: (fn) => {
       return {
-        _SerializeAnyType: "Function",
+        _SAType: "Function",
         _SAfunction: fn.toString()
       }
     }
@@ -246,13 +278,32 @@ const objectBehaviors = {
 // in case they don't exist, perform existence checks on these
 // types before adding them
 
+if (typeof BigInt !== 'undefined') {
+  Object.assign(objectBehaviors, {
+    "BigInt": {
+      type: BigInt,
+      serialize: (big) => {
+        return {
+          _SAType: 'BigInt',
+          _SAnum: big.toString()
+        }
+      }
+    },
+    "BigInt_Serialized": {
+      deserialize: (bigSer) => {
+        return BigInt(bigSer._SAnum);
+      }
+    }
+  });
+}
+
 if (typeof Int8Array !== 'undefined') {
   Object.assign(objectBehaviors, {
     'Int8Array': {
       type: Int8Array,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Int8Array",
+          _SAType: "Int8Array",
           _SAvalues: Array.from(src)
         }
       }
@@ -271,7 +322,7 @@ if (typeof Uint8Array !== 'undefined') {
       type: Uint8Array,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Uint8Array",
+          _SAType: "Uint8Array",
           _SAvalues: Array.from(src)
         }
       }
@@ -290,7 +341,7 @@ if (typeof Uint8ClampedArray !== 'undefined') {
       type: Uint8ClampedArray,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Uint8ClampedArray",
+          _SAType: "Uint8ClampedArray",
           _SAvalues: Array.from(src)
         }
       }
@@ -310,7 +361,7 @@ if (typeof Int16Array !== 'undefined') {
       type: Int16Array,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Int16Array",
+          _SAType: "Int16Array",
           _SAvalues: Array.from(src)
         }
       }
@@ -329,7 +380,7 @@ if (typeof Uint16Array !== 'undefined') {
       type: Uint16Array,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Uint16Array",
+          _SAType: "Uint16Array",
           _SAvalues: Array.from(src)
         }
       }
@@ -348,7 +399,7 @@ if (typeof Int32Array !== 'undefined') {
       type: Int32Array,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Int32Array",
+          _SAType: "Int32Array",
           _SAvalues: Array.from(src)
         }
       }
@@ -367,7 +418,7 @@ if (typeof Uint32Array !== 'undefined') {
       type: Uint32Array,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Uint32Array",
+          _SAType: "Uint32Array",
           _SAvalues: Array.from(src)
         }
       }
@@ -386,7 +437,7 @@ if (typeof Float32Array !== 'undefined') {
       type: Float32Array,
       serialize: (src) => {
         return {
-          _SerializeAnyType: "Float32Array",
+          _SAType: "Float32Array",
           _SAvalues: Array.from(src)
         }
       }
@@ -407,7 +458,7 @@ if (typeof Float64Array !== 'undefined') {
         let values = [];
         src.forEach(fl64 => values.push(fl64.toString()));
         return {
-          _SerializeAnyType: "Float64Array",
+          _SAType: "Float64Array",
           _SAvalues: values
         }
       }
@@ -428,7 +479,7 @@ if (typeof BigInt64Array !== 'undefined') {
         let values = [];
         src.forEach(bigint => values.push(bigint.toString()));
         return {
-          _SerializeAnyType: "BigInt64Array",
+          _SAType: "BigInt64Array",
           _SAvalues: values
         }
       }
@@ -449,7 +500,7 @@ if (typeof BigUint64Array !== 'undefined') {
         let values = [];
         src.forEach(bigint => values.push(bigint.toString()));
         return {
-          _SerializeAnyType: "BigUint64Array",
+          _SAType: "BigUint64Array",
           _SAvalues: values
         }
       }
@@ -465,13 +516,27 @@ if (typeof BigUint64Array !== 'undefined') {
 if (typeof ArrayBuffer !== 'undefined') {
   // do not support, require typed array buffers
   Object.assign(objectBehaviors, {
-    "ArrayBuffer": {
+    'ArrayBuffer': {
       type: ArrayBuffer,
       serialize: (src) => {
-        throw "Error: serializing untyped ArrayBuffer not supported";
-      },
-      deserialize: (src) => {
-        throw "Error: deserializing untyped ArrayBuffer not supported";
+        const uint8 = new Uint8Array(src);
+        let values = [];
+        uint8.forEach((val) => {
+          values.push(val);
+        });
+        return {
+          _SAType: 'ArrayBuffer',
+          _SAvalues: values
+        }
+      }
+    },
+    "ArrayBuffer_Serialized": {
+      deserialize: (srcSer) => {
+        const values = srcSer._SAvalues;
+        const abuf = new ArrayBuffer(values.length);
+        const uint8 = new Uint8Array(abuf);
+        uint8.set(values);
+        return abuf;
       }
     }
   });
@@ -487,8 +552,8 @@ if (typeof Map !== 'undefined') {
           kvPairs.push([key, value]);
         });
         return {
-          _SerializeAnyType: "Map",
-          _SAkeyValuePairs: kvPairs
+          _SAType: "Map",
+          _SAkvPairs: kvPairs
         }
       },
       iterate: (map, callback) => {
@@ -508,27 +573,12 @@ if (typeof Map !== 'undefined') {
     },
     'Map_Serialized': {
       deserialize: (serData) => {
-        const kvPairs = serData._SAkeyValuePairs;
+        const kvPairs = serData._SAkvPairs;
         const map = new Map();
         kvPairs.forEach(([key, value]) => {
           map.set(key, value);
         });
         return map;
-      },
-      iterate: (mapSer, callback) => {
-        const kvPairs = mapSer._SAkeyValuePairs;
-        kvPairs.forEach((value, index) => {
-          const elInfo = {
-            key: index,
-            value: value,
-            type: objectType(value)
-          };
-          callback(elInfo);
-        });
-      },
-      setValue: (mapSer, elInfo) => {
-        const kvPairs = mapSer._SAkeyValuePairs;
-        kvPairs[elInfo.key] = elInfo.value;
       }
     }
   });
@@ -542,7 +592,7 @@ if (typeof Set !== 'undefined') {
         let values = [];
         set.forEach(val => values.push(val));
         return {
-          _SerializeAnyType: "Set",
+          _SAType: "Set",
           _SAvalues: values
         }
       },
@@ -558,6 +608,7 @@ if (typeof Set !== 'undefined') {
         });
       },
       setValue: (set, elInfo) => {
+        // delete current value, then add new value
         set.delete(elInfo.originalValue);
         set.add(elInfo.value);
         elInfo.originalValue = elInfo.value;
@@ -566,21 +617,6 @@ if (typeof Set !== 'undefined') {
     "Set_Serialized": {
       deserialize: (srcSer) => {
         return new Set(srcSer._SAvalues);
-      },
-      iterate: (setSer, callback) => {
-        const setVals = setSer._SAvalues;
-        setVals.forEach((val, index) => {
-          const elInfo = {
-            key: index,
-            value: val,
-            type: objectType(val)
-          };
-          callback(elInfo);
-        })
-      },
-      setValue: (setSer, elInfo) => {
-        const setVals = setSer._SAvalues;
-        setVals[elInfo.key] = elInfo.value;
       }
     }
   });
@@ -591,9 +627,6 @@ if (typeof WeakSet !== 'undefined') {
     "WeakSet" : {
       type: WeakSet,
       serialize: () => {
-        throw "Error: serialize WeakSet not supported";
-      },
-      deserialize: () => {
         throw "Error: serialize WeakSet not supported";
       }
     }
@@ -606,10 +639,7 @@ if (typeof WeakMap !== 'undefined') {
       type: WeakMap,
       serialize: () => {
         throw "Error: serialize WeakMap not supported";
-      },
-      deserialize: () => {
-        throw "Error: serialize WeakMap not supported";
-      },
+      }
     }
   });
 }
@@ -621,7 +651,7 @@ if (typeof Buffer !== 'undefined') {
       type: Buffer,
       serialize: (buf) => {
         return {
-          _SerializeAnyType: "Buffer",
+          _SAType: "Buffer",
           _SAutf8String: buf.toString()
         }
       }
@@ -645,7 +675,7 @@ Object.assign(objectBehaviors, {
         return obj;
       } else {
         return {
-          _SerializeAnyType: "_SACustomObject",
+          _SAType: "_SACustomObject",
           _SAconstructorName: cName,
           _SAobject: Object.assign({},obj)
         }
@@ -671,6 +701,7 @@ Object.assign(objectBehaviors, {
     }
   },
   "_SACustomObject": {
+    // any object with a custom constructor name
     deserialize: (srcSer, prototyper) => {
       const cName = srcSer._SAconstructorName;
       const cNameDefined = eval('typeof ' + cName + ' !== "undefined"');
@@ -680,7 +711,7 @@ Object.assign(objectBehaviors, {
         cObj = new eval(cName)();
       } else {
         if (!prototyper) {
-          throw 'Error: deserialize _SACustomObject - proototyper missing';
+          throw 'Error: deserialize _SACustomObject - prototyper missing';
         }
         cObj = prototyper(cName);
       }
@@ -689,25 +720,10 @@ Object.assign(objectBehaviors, {
       }
       Object.assign(cObj, srcObj);
       return cObj;
-    },
-    iterate: (objSer, callback) => {
-      const obj = objSer._SAobject;
-      for (let [key, value] of Object.entries(obj)) {
-        const elInfo = {
-          key: key,
-          value: value,
-          type: objectType(value)
-        };
-        callback(elInfo);
-      }
-    },
-    setValue: (objSer, elInfo) => {
-     // console.log('setting _SACustomObject value for elInfo:',elInfo);
-      const obj = objSer._SAobject;
-      obj[elInfo.key] = elInfo.value;
     }
   },
   "_SACustomArray": {
+    // any array with a custom constructor name
     deserialize: (srcSer, prototyper) => {
       const cName = srcSer._SAconstructorName;
       const cNameDefined = eval('typeof ' + cName + ' !== "undefined"');
@@ -726,22 +742,6 @@ Object.assign(objectBehaviors, {
       }
       array = array.concat(array, values);
       return array;
-    },
-    iterate: (arraySer, callback) => {
-      const values = arraySer._SAvalues;
-      values.forEach((value, index) => {
-        const elInfo = {
-          key: index,
-          value: value,
-          type: objectType(value)
-        };
-        callback(elInfo);
-      });
-    },
-    setValue: (arrSer, elInfo) => {
-     // console.log('setting _SACustomArray value for elInfo:', elInfo);
-      const array = arrSer._SAvalues;
-      array[elInfo.key] = elInfo.value;
     }
   },
   'unknown': {
