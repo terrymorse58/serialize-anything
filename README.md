@@ -13,9 +13,9 @@ undefined property, RegExp, custom Object, custom Array, Set, Map), and
 fails with and error on other types (BigInt, Function, undefined variable).
 
 #### Exceptions
-The only two JavaScript types that are not serialized are *WeakMap* and
-*WeakSet*. Since there is no way to enumerate their values, they can't be
-serialized.
+There are only two JavaScript types that *serialize-anything* does not support:
+*WeakMap* and*WeakSet*. Since there is no way to enumerate their values, they
+can't be serialized.
 
 ## Installation
 ```shell script
