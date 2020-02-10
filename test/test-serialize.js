@@ -1,27 +1,20 @@
 // test-serialize.js - test of serialize-all
 
-const [serialize, deserialize] = require('../index.js');
-console.log("test-serialize.js typeof serialize:",typeof serialize);
-const errors = [];
+const SerAny = require('../index.js');
 
-
-// wrapper that calls deserialize with prototyper
-function deserializeCustom(item) {
-  return deserialize(item, (constructorName) => {
-    let typeExists = eval('typeof ' + constructorName + '!== "undefined"' );
-    if (typeExists) {
-      return eval('new ' + constructorName + '()');
-    }
-    return null;
-  });
-}
+// callback function to make custom objects
+SerAny.customObject = function (name) {
+  let typeExists = eval('typeof ' + name + '!== "undefined"' );
+  return typeExists ? eval('new ' + name + '()') : null;
+};
 
 // serialize options
 const options = {
   maxDepth: 20,
   pretty: true
-}
+};
 
+const errors = [];
 
 // Date
 console.log("\nTest1 (Date):");
@@ -31,9 +24,9 @@ console.log(
   const src = new Date();
   console.log('    src:  ', src);
   try {
-    const ser = serialize(src, options);
+    const ser = SerAny.serialize(src, options);
     console.log('    ser:  ',ser);
-    const deser = deserialize(ser);
+    const deser = SerAny.deserialize(ser);
     console.log('    deser: ' + deser.constructor.name + ' ' + deser);
     if (src.getTime() !== deser.getTime()) {
       throw 'Error: destination date does not match source date';
@@ -63,10 +56,10 @@ console.log(
   console.log(
     '    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log(
       '    ser:  ', ser, '\n');
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log(
       '    deser:', deser);
     jsonTest(src);
@@ -85,9 +78,9 @@ console.log(
   console.log('    src:  ', src);
   console.log('    src.toString:     ', src.toString());
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     console.log('    deser.toString(): ', deser.toString());
     if (!deser.toString().includes('function foo')) {
@@ -113,9 +106,9 @@ console.log(
   let src = [1, 2, /abc/i];
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser: ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -133,9 +126,9 @@ console.log(
   let src = Int8Array.from([3, 4, 42]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -153,9 +146,9 @@ console.log(
   let src = Uint8Array.from([3, 128, 64]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -173,9 +166,9 @@ console.log(
   let src = Int16Array.from([32, 128, 64]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -193,9 +186,9 @@ console.log(
   let src = Uint16Array.from([32, 128, 64]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -213,9 +206,9 @@ console.log(
   let src = Int32Array.from([32, 128, 64]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -232,9 +225,9 @@ console.log(
   let src = Uint32Array.from([32, 128, 64]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -252,9 +245,9 @@ console.log(
   let src = Float32Array.from([32, 128, 64]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -272,9 +265,9 @@ console.log(
   let src = Float64Array.from([32, 128, 64]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -291,9 +284,9 @@ console.log(
   let src = BigInt64Array.from([3n, 4n, 42n]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -311,9 +304,9 @@ console.log(
   let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
   console.log('    src:  ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     jsonTest(src);
     console.log('    deser:', deser);
   } catch (err) {
@@ -338,9 +331,9 @@ console.log(`\nTest14a (ArrayBuffer):`);
   console.log('    src:  ', aBuf);
   console.log('    aBuf: ', aBuf);
   try {
-    let ser = serialize(aBuf);
+    let ser = SerAny.serialize(aBuf);
     console.log('    ser:', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser: ', deser);
     jsonTest(src);
   } catch (err) {
@@ -358,9 +351,9 @@ console.log(`\nTest15 (Set):`);
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -382,9 +375,9 @@ console.log(`\nTest16 (WeakSet):`);
   src.add(obj);
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -406,9 +399,9 @@ console.log(`\nTest17 (WeakMap):`);
   src.set(obj, 42);
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -426,9 +419,9 @@ console.log(`\nTest18 (Buffer):`);
   let src = Buffer.from("hello world");
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserialize(ser);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -457,9 +450,9 @@ class CustomObject extends Object {
   console.log('    src: ', src);
   console.log('    src.custom(): ', src.custom());
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserializeCustom(ser);
+    let deser = SerAny.deserialize(ser, SerAny.customObject);
     console.log('    deser:', deser);
     console.log('    deser.custom(): ', deser.custom());
     jsonTest(src);
@@ -485,9 +478,9 @@ class CustomArray extends Array {
   console.log('    src: ', src);
   console.log('    src.custom(): ', src.custom());
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserializeCustom(ser);
+    let deser = SerAny.deserialize(ser, SerAny.customObject);
     console.log('    deser:', deser);
     console.log('    deser.custom():', deser.custom());
     jsonTest(src);
@@ -506,9 +499,9 @@ console.log(`\nTest21 (Array containing BigInt):`);
   let src = [1, 2, 3000000000n];
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserializeCustom(ser);
+    let deser = SerAny.deserialize(ser, SerAny.customObject);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -526,9 +519,9 @@ console.log(`\nTest22 (Object containing undefined prop):`);
   let src = {foo: "bar", notSet: undefined};
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserializeCustom(ser);
+    let deser = SerAny.deserialize(ser, SerAny.customObject);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -546,9 +539,9 @@ console.log(`\nTest23 (undefined variable):`);
   let src = undefined;
   console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
+    let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = deserializeCustom(ser);
+    let deser = SerAny.deserialize(ser, SerAny.customObject);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {

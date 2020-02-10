@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Borwser Test</title>
+</head>
+<body>
+<h1>Test of serialize-anything from Browser</h1>
+<p>Open the console window.</p>
+<script src="../serialize-any.js"></script>
+<script>
+  console.log("SerAny:",SerAny);
+  const src = [1, 2, /abc/g];
+  console.log('src:', src);
+  const ser = SerAny.serialize(src);
+  console.log("ser: " + ser);
+  const deser = SerAny.deserialize(ser);
+  console.log("deser:", deser);
+</script>
+</body>
+</html>

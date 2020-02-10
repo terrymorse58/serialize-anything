@@ -18,31 +18,54 @@ There are only two JavaScript types that *serialize-anything* does not support:
 can't be serialized.
 
 ## Installation
+Install as a Node.js module:
 ```shell script
-$ npm install serialize-anything
+ $ npm install serialize-anything
 ```
+Or download a package from [github](https://github.com/terrymorse58/serialize-anything.git).
 
 ## Usage
-Node.js
+Node.js:
 ```javascript
-const [serialize, deserialize] = require('serialize-anything');
+const SerAny = require('serialize-anything');
 
+// to support custom objects, copy this from 'custom-objects.js'
+SerAny.customObject = function (name) {
+  let typeExists = eval('typeof ' + name + '!== "undefined"' );
+  return typeExists ? eval('new ' + name + '()') : null;
+};
+```
+From HTML file:
+```HTML
+<script src="serialize-any.js"></script>
+<script>
+// to support custom objects, copy this from 'custom-objects.js'
+SerAny.customObject = function (name) {
+  let typeExists = eval('typeof ' + name + '!== "undefined"' );
+  return typeExists ? eval('new ' + name + '()') : null;
+};
+</script>
+````
+To serialize - convert JavaScript data to serial-anything data:
+```javascript
 // serialize
-serialized = serialize(source);
-
+serialized = SerAny.serialize(source);
+```
+To deserialize - convert serial-anything data to JavaScript data:
+```javascript
 // deserialize
-deserialized = deserialize(serialized);
+deserialized = SerAny.deserialize(serialized);
 
-// deserialize data that contains custom data types
-deserialized = deserializeCustom(serialized);
+// deserialize with custom objects
+deserialized = SerAny.deserialize(serialized, SerAny.customObject);
 ```
 ## Functions
 
-### `serialize()`
+### `SerAny.serialize()`
 Serialize JavaScript data
 #### Syntax
 ```javascript
-serialize(source [, options])
+SerAny.serialize(source [, options])
 ```
 #### Parameters
 `source`<br>
@@ -62,196 +85,170 @@ Throws an error if source's<br>
 greater than *maxDepth*. Default is 20 levels.
 
 &nbsp;&nbsp;&nbsp; `pretty`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {true|false} *[optional]* - Return serialized
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {boolean} *[optional]* - Return serialized
 data in<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pretty format if *true*. Default is
 *false* - not pretty.
 
 #### Return value
-The serialized data  {String}.
+The serialized data as a string.
 
 ---
-### `deserialize()`
-Restore data that was produced by `serialize()`.
+### `SerAny.deserialize()`
+Restore data that was produced by `SerAny.serialize()`.
 #### Syntax
 ```javascript
 deserialize(source)
 ```
 #### Parameters
 `source`<br>
-&nbsp;&nbsp;&nbsp; {String} - Serialized data that was produced by `serialize()`
+&nbsp;&nbsp;&nbsp; (string) - Serialized data that was produced by
+`SerAny.serialize()`
 #### Return value
-{*} - The de-serialized data, of a type matching the original data
-that was input to *serialize()*
+The de-serialized data, matching the type of the original data
+
 ---
-### `deserializeCustom()`
-Deserialize JavaScript data that contains custom data types.
-#### Syntax
-```javascript
-deserializeCustom(source)
-```
-#### Parameters
-`source`<br>
-&nbsp;&nbsp;&nbsp; {String} - Serialized data that was produced by `serialize()`
-#### Return value ####
-The de-serialized data, matching the original data's type.
-
-#### Special Note
-In order to provide *serialize-anything* access to custom data types,
-the following `deserializeCustom()` function
-must be placed on the calling page:
-```javascript
-function deserializeCustom(item) {
-  return deserialize(item, (constructorName) => {
-    let typeExists =
-      eval('typeof ' + constructorName + '!== "undefined"' );
-    if (typeExists) {
-      return eval('new ' + constructorName + '()');
-    }
-    return null;
-  });
-}
-```
-
 
 ### serialize-anything vs JSON.*
-***serialize-anything*** correctly handles all of the data types that
-```javascript
-JSON.parse( JSON.stringify(data) )
-````
-(JSON.*) cannot. Here are several examples:
+***serialize-anything*** correctly coverts with no data alteration the
+data types that the built-in standard
+`JSON.parse( JSON.stringify(data) )`
+(*JSON.**) does not. Here are several examples:
 
 #### Date
-JSON.* converts Date to String:
+*JSON.** converts **Date** object to a string:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 type: Date
 value: Sun Feb 09 2020 10:52:49 GMT-0800 (Pacific Standard Time)
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 type: String
 value: "2020-02-09T17:33:12.061Z"
 ```
 #### Map
-JSON.* converts standard JavaScript Map object into a vanilla, empty Object:
+*JSON.** converts standard JavaScript **Map** object into a vanilla, empty Object:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 Map(2) {
   'key1' => 'key1 value',
   { foo: 'bar' } => Date {...}
 }
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 Object {}
 ```
-#### Regular Expression
-JSON.* converts regular expression to vanilla, empty Object:
+#### Regular Expression RegExp
+*JSON.** converts regular expression **RegExp** object to an **Object** with
+no data:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 Array [ 1, 2, /abc/i ]
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 Array [ 1, 2, Object {} ]
 ```
 
 #### Typed Array
-JSON.* converts standard TypedArray to Object:
+*JSON.** converts standard **TypedArray** to **Object** with numbers as the
+property names:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 Int8Array [ 3, 4, 42 ]
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 Object { '0': 3, '1': 4, '2': 42 }
 ```
 #### BingInt64Array
-JSON.* cannot handle standard JavaScript BingInt64Array at all:
+*JSON.** throws an error on standard JavaScript **BingInt64Array**:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 BigUint64Array [ 3000000000000000000n, 4n, 42n ]
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 "TypeError: Do not know how to serialize a BigInt"
 ```
 #### ArrayBuffer
-JSON.* converts ArrayBuffer to Object with numbered properties:
+*JSON.** converts **ArrayBuffer** to **Object** with numbers for the property
+names:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 ArrayBuffer {
   [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
   byteLength: 8
 }
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 Object { '0': 1, '1': 2, '2': 3, '3': 4, '4': 5, '5': 127, '6': 0, '7': 0 }
 ```
 #### Custom Object
-JSON.* converts a custom object into a vanilla Object:
+*JSON.** converts a custom object into a plain **Object**:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 CustomObject {
   key: 'value',
   key2: [ 1, 2, 3 ]
 }
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 Object {
   key: 'value',
   key2: [ 1, 2, 3 ]
 }
 ```
 #### Custom Array
-JSON.* converts a custom array into a vanilla Array:
+*JSON.** converts a custom array into a plain **Array**:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 CustomArray [ 1, 2, 42 ]
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 Array [ 1, 2, 42 ]
 ```
 
 #### BigInt
-JSON.* fails with an error whenever it encounters a BigInt:
+*JSON.** fails with an error whenever it encounters **BigInt** data type:
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 Array [ 1, 2, 3000000000n ]
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 "TypeError: Do not know how to serialize a BigInt"
 ```
 
 #### Undefined object property
-JSON.* strips out any object property with value set to 'undefined':
+*JSON.** strips out any object property with value set to 'undefined':
 ```javascript
-// serialize ... deserialize:
+// serialize-anything:
 Object {
   foo: 'bar',
   notSet: undefined
 }
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 Object {
   foo: 'bar'
 }
 ```
 
 #### Function
-JSON.* fails with an error message on attemt to serialize Function:
+*JSON.** fails with an error message on **Function**:
 ```javascript
-// serialize ... deserialize:
-function foo (x) { return x + 1;}
+// serialize-anything:
+function foo (x) { return x + 1; }
 ```
 ```javascript
-// JSON.stringify ... JSON.parse:
+// JSON.*:
 "SyntaxError: Unexpected token u in JSON at position 0"
 ```
 

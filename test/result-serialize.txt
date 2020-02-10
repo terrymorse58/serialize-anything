@@ -1,18 +1,17 @@
-test-serialize.js typeof serialize: function
 
 Test1 (Date):
   const src = new Date();
-    src:   2020-02-09T18:52:49.000Z
+    src:   2020-02-10T17:55:35.171Z
     ser:   {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1581274369000
+    "_SAtimestamp": 1581357335171
   }
 }
-    deser: Date Sun Feb 09 2020 10:52:49 GMT-0800 (Pacific Standard Time)
-    JSON:  2020-02-09T18:52:49.000Z
-    json: String 2020-02-09T18:52:49.000Z
+    deser: Date Mon Feb 10 2020 09:55:35 GMT-0800 (Pacific Standard Time)
+    JSON:  2020-02-10T17:55:35.171Z
+    json: String 2020-02-10T17:55:35.171Z
 
 Test2 (Map):
   let src = new Map();
@@ -22,7 +21,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-09T18:52:49.004Z
+  { foo: 'bar' } => 2020-02-10T17:55:35.173Z
 }
     ser:   {
   "_Serialize_Any_Encoded": true,
@@ -39,7 +38,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581274369004
+          "_SAtimestamp": 1581357335173
         }
       ]
     ]
@@ -48,7 +47,7 @@ Test2 (Map):
 
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-09T18:52:49.004Z
+  { foo: 'bar' } => 2020-02-10T17:55:35.173Z
 }
     JSON:  {}
 
@@ -278,7 +277,7 @@ Test14a (ArrayBuffer):
 
 Test15 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-09T18:52:49.014Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-10T17:55:35.182Z } }
     ser:   {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -290,13 +289,13 @@ Test15 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1581274369014
+          "_SAtimestamp": 1581357335182
         }
       }
     ]
   }
 }
-    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-09T18:52:49.014Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-10T17:55:35.182Z } }
     JSON:  {}
 
 Test16 (WeakSet):
@@ -340,7 +339,7 @@ Test19 (CustomObject):
   let src = new CustomObject();
   src.key = "value";
   src.key2 = [1,2, new Date()];
-    src:  CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T18:52:49.017Z ] }
+    src:  CustomObject { key: 'value', key2: [ 1, 2, 2020-02-10T17:55:35.184Z ] }
     src.custom():  I am a custom Object
     ser:   {
   "_Serialize_Any_Encoded": true,
@@ -354,15 +353,15 @@ Test19 (CustomObject):
         2,
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581274369017
+          "_SAtimestamp": 1581357335184
         }
       ]
     }
   }
 }
-    deser: CustomObject { key: 'value', key2: [ 1, 2, 2020-02-09T18:52:49.017Z ] }
+    deser: CustomObject { key: 'value', key2: [ 1, 2, 2020-02-10T17:55:35.184Z ] }
     deser.custom():  I am a custom Object
-    JSON:  { key: 'value', key2: [ 1, 2, '2020-02-09T18:52:49.017Z' ] }
+    JSON:  { key: 'value', key2: [ 1, 2, '2020-02-10T17:55:35.184Z' ] }
 
 Test20 (CustomArray with RegExp):
   class CustomArray extends Array {
