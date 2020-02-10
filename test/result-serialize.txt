@@ -1,17 +1,17 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2020-02-10T17:55:35.171Z
+    src:   2020-02-10T23:11:56.775Z
     ser:   {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1581357335171
+    "_SAtimestamp": 1581376316775
   }
 }
-    deser: Date Mon Feb 10 2020 09:55:35 GMT-0800 (Pacific Standard Time)
-    JSON:  2020-02-10T17:55:35.171Z
-    json: String 2020-02-10T17:55:35.171Z
+    deser: Date Mon Feb 10 2020 15:11:56 GMT-0800 (Pacific Standard Time)
+    JSON:  2020-02-10T23:11:56.775Z
+    json: String 2020-02-10T23:11:56.775Z
 
 Test2 (Map):
   let src = new Map();
@@ -21,7 +21,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-10T17:55:35.173Z
+  { foo: 'bar' } => 2020-02-10T23:11:56.778Z
 }
     ser:   {
   "_Serialize_Any_Encoded": true,
@@ -38,7 +38,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581357335173
+          "_SAtimestamp": 1581376316778
         }
       ]
     ]
@@ -47,7 +47,7 @@ Test2 (Map):
 
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-10T17:55:35.173Z
+  { foo: 'bar' } => 2020-02-10T23:11:56.778Z
 }
     JSON:  {}
 
@@ -277,7 +277,7 @@ Test14a (ArrayBuffer):
 
 Test15 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-10T17:55:35.182Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-10T23:11:56.786Z } }
     ser:   {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -289,13 +289,13 @@ Test15 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1581357335182
+          "_SAtimestamp": 1581376316786
         }
       }
     ]
   }
 }
-    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-10T17:55:35.182Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-10T23:11:56.786Z } }
     JSON:  {}
 
 Test16 (WeakSet):
@@ -339,7 +339,7 @@ Test19 (CustomObject):
   let src = new CustomObject();
   src.key = "value";
   src.key2 = [1,2, new Date()];
-    src:  CustomObject { key: 'value', key2: [ 1, 2, 2020-02-10T17:55:35.184Z ] }
+    src:  CustomObject { key: 'value', key2: [ 1, 2, 2020-02-10T23:11:56.788Z ] }
     src.custom():  I am a custom Object
     ser:   {
   "_Serialize_Any_Encoded": true,
@@ -353,15 +353,15 @@ Test19 (CustomObject):
         2,
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581357335184
+          "_SAtimestamp": 1581376316788
         }
       ]
     }
   }
 }
-    deser: CustomObject { key: 'value', key2: [ 1, 2, 2020-02-10T17:55:35.184Z ] }
+    deser: CustomObject { key: 'value', key2: [ 1, 2, 2020-02-10T23:11:56.788Z ] }
     deser.custom():  I am a custom Object
-    JSON:  { key: 'value', key2: [ 1, 2, '2020-02-10T17:55:35.184Z' ] }
+    JSON:  { key: 'value', key2: [ 1, 2, '2020-02-10T23:11:56.788Z' ] }
 
 Test20 (CustomArray with RegExp):
   class CustomArray extends Array {
@@ -441,6 +441,106 @@ Test23 (undefined variable):
 }
     deser: undefined
     *** JSON Error SyntaxError: Unexpected token u in JSON at position 0
+
+Test24 (Error):
+  let src = new Error("this is a sample error");
+    src:  Error: this is a sample error
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:565:13)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+    ser:   {
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "_SAType": "Error",
+    "_SAmessage": "this is a sample error",
+    "_SAstack": "Error: this is a sample error\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:565:13)\n    at Module._compile (internal/modules/cjs/loader.js:1139:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)\n    at Module.load (internal/modules/cjs/loader.js:988:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:896:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)\n    at internal/main/run_main_module.js:17:47"
+  }
+}
+    deser: Error: this is a sample error
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:565:13)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+    JSON:  {}
+
+Test25 (demo):
+  class CustomObj extends Object {}
+    const custom = new CustomObj();
+    Object.assign(custom,{foo:"bar"});
+    let src = {
+      map: new Map([
+        [1, 'one'],
+        [2, 'two'],
+        [3, 'three'],
+      ]),
+      custom
+    };
+
+    src:  {
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000n,
+  map: Map(2) { 1 => 'one', 2 => 'two' },
+  custom: CustomObj { foo: 'bar' },
+  buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+}
+    ser:   {
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "undef": {
+      "_SAType": "undef"
+    },
+    "regexp": {
+      "_SAType": "RegExp",
+      "_SAsource": "abc",
+      "_SAflags": "gi"
+    },
+    "bignum": {
+      "_SAType": "BigInt",
+      "_SAnum": "4000000000000000000"
+    },
+    "map": {
+      "_SAType": "Map",
+      "_SAkvPairs": [
+        [
+          1,
+          "one"
+        ],
+        [
+          2,
+          "two"
+        ]
+      ]
+    },
+    "custom": {
+      "_SAType": "_SACustomObject",
+      "_SAconstructorName": "CustomObj",
+      "_SAobject": {
+        "foo": "bar"
+      }
+    },
+    "buffer": {
+      "_SAType": "Buffer",
+      "_SAutf8String": "hello world"
+    }
+  }
+}
+    deser: {
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000n,
+  map: Map(2) { 1 => 'one', 2 => 'two' },
+  custom: CustomObj { foo: 'bar' },
+  buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+}
+    *** JSON Error TypeError: Do not know how to serialize a BigInt
 
 End of test.
 

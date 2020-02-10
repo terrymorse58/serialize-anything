@@ -10,12 +10,12 @@ Contrast this with the JavaScript standard way to serialize/deserialze,
 *JSON.stringify()* and
 *JSON.parse()*, which do not maintain certain data types (Date,
 undefined property, RegExp, custom Object, custom Array, Set, Map), and
-fails with and error on other types (BigInt, Function, undefined variable).
+fails with an error on other types (BigInt, Function, undefined variable).
 
 #### Exceptions
 There are only two JavaScript types that *serialize-anything* does not support:
-*WeakMap* and*WeakSet*. Since there is no way to enumerate their values, they
-can't be serialized.
+*WeakMap* and *WeakSet*. Since there is no way at this time to enumerate their
+values, they can't be serialized.
 
 ## Installation
 Install as a Node.js module:
@@ -29,21 +29,25 @@ Node.js:
 ```javascript
 const SerAny = require('serialize-anything');
 
-// to support custom objects, copy this from 'custom-objects.js'
-SerAny.customObject = function (name) {
+// copied from `custom-objects.js` to handle custom objects (optional)
+SerAny._custom = function (name) {
   let typeExists = eval('typeof ' + name + '!== "undefined"' );
   return typeExists ? eval('new ' + name + '()') : null;
 };
+SerAny._ds = SerAny.deserialize;
+SerAny.deserialize = source => SerAny._ds(source, SerAny._custom);
 ```
 From HTML file:
 ```HTML
 <script src="serialize-any.js"></script>
 <script>
-// to support custom objects, copy this from 'custom-objects.js'
-SerAny.customObject = function (name) {
-  let typeExists = eval('typeof ' + name + '!== "undefined"' );
-  return typeExists ? eval('new ' + name + '()') : null;
-};
+    // copied from `custom-objects.js` to handle custom objects (optional)
+    SerAny._custom = function (name) {
+      let typeExists = eval('typeof ' + name + '!== "undefined"' );
+      return typeExists ? eval('new ' + name + '()') : null;
+    };
+    SerAny._ds = SerAny.deserialize;
+    SerAny.deserialize = source => SerAny._ds(source, SerAny._custom);
 </script>
 ````
 To serialize - convert JavaScript data to serial-anything data:
@@ -55,10 +59,69 @@ To deserialize - convert serial-anything data to JavaScript data:
 ```javascript
 // deserialize
 deserialized = SerAny.deserialize(serialized);
-
-// deserialize with custom objects
-deserialized = SerAny.deserialize(serialized, SerAny.customObject);
 ```
+---
+### Example
+```javascript
+// serialize
+const custom = new CustomObj();
+custom.foo = 'bar';
+let source = {
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000n,
+  map: new Map([[1, 'one'], [2, 'two']]),
+  custom,
+  buffer: Buffer.from("hello world")
+};
+
+const ser = SerAny.serialize(source);
+```
+Serialized result:
+```json
+'{
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "undef": { "_SAType": "undef" },
+    "regexp": {
+      "_SAType": "RegExp",
+      "_SAsource": "abc",
+      "_SAflags": "gi"
+    },
+    "bignum": {
+      "_SAType": "BigInt",
+      "_SAnum": "4000000000000000000"
+    },
+    "map": {
+      "_SAType": "Map",
+      "_SAkvPairs": [ [1, "one"], [2,"two"] ]
+    },
+    "custom": {
+      "_SAType": "_SACustomObject",
+      "_SAconstructorName": "CustomObj",
+      "_SAobject": { "foo": "bar" }
+    },
+    "buffer": {
+      "_SAType": "Buffer",
+      "_SAutf8String": "hello world"
+    }
+  }
+}'
+```
+Deserialized:
+```javascript
+const deser = SerAny.deserialize(ser);
+
+deser == {
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000n,
+  map: Map(2) { 1 => 'one', 2 => 'two' },
+  custom: CustomObj { foo: 'bar' },
+  buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+}
+```
+---
 ## Functions
 
 ### `SerAny.serialize()`
@@ -95,23 +158,24 @@ The serialized data as a string.
 
 ---
 ### `SerAny.deserialize()`
-Restore data that was produced by `SerAny.serialize()`.
+Restore serialized data created by `SerAny.serialize()`.
 #### Syntax
 ```javascript
 deserialize(source)
 ```
 #### Parameters
 `source`<br>
-&nbsp;&nbsp;&nbsp; (string) - Serialized data that was produced by
+&nbsp;&nbsp;&nbsp; (string) - Serialized data that was created by
 `SerAny.serialize()`
+
 #### Return value
 The de-serialized data, matching the type of the original data
 
 ---
 
 ### serialize-anything vs JSON.*
-***serialize-anything*** correctly coverts with no data alteration the
-data types that the built-in standard
+***serialize-anything*** correctly converts—with no data alteration—data
+types which the built-in standard
 `JSON.parse( JSON.stringify(data) )`
 (*JSON.**) does not. Here are several examples:
 

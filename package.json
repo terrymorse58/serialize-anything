@@ -1,6 +1,6 @@
 {
   "name": "serialize-anything",
-  "version": "0.2.0",
+  "version": "1.0.4",
   "description": "serialize and de-serialize any JavaScript data",
   "main": "index.js",
   "repository": {
@@ -20,7 +20,7 @@
   "author": "Terry Morse",
   "license": "MIT",
   "dependencies": {
-    "deep-copy-all": "^1.2.0"
+    "deep-copy-all": "^1.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

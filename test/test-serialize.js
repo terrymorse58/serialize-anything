@@ -2,11 +2,13 @@
 
 const SerAny = require('../index.js');
 
-// callback function to make custom objects
-SerAny.customObject = function (name) {
+// copied from custom-objects.js to handle custom objects
+SerAny._custom = function (name) {
   let typeExists = eval('typeof ' + name + '!== "undefined"' );
   return typeExists ? eval('new ' + name + '()') : null;
 };
+SerAny._ds = SerAny.deserialize;
+SerAny.deserialize = source => SerAny._ds(source, SerAny._custom);
 
 // serialize options
 const options = {
@@ -15,6 +17,10 @@ const options = {
 };
 
 const errors = [];
+
+class CustomObj extends Object {}
+
+
 
 // Date
 console.log("\nTest1 (Date):");
@@ -97,7 +103,7 @@ console.log(
   }
 }
 
-// RegExp
+  // RegExp
 console.log('\nTest4: (RegExp)');
 console.log(
   '  let src = [1,2,/abc/i];'
@@ -452,7 +458,7 @@ class CustomObject extends Object {
   try {
     let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = SerAny.deserialize(ser, SerAny.customObject);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     console.log('    deser.custom(): ', deser.custom());
     jsonTest(src);
@@ -480,7 +486,7 @@ class CustomArray extends Array {
   try {
     let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = SerAny.deserialize(ser, SerAny.customObject);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     console.log('    deser.custom():', deser.custom());
     jsonTest(src);
@@ -501,7 +507,7 @@ console.log(`\nTest21 (Array containing BigInt):`);
   try {
     let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = SerAny.deserialize(ser, SerAny.customObject);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -521,7 +527,7 @@ console.log(`\nTest22 (Object containing undefined prop):`);
   try {
     let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = SerAny.deserialize(ser, SerAny.customObject);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -541,7 +547,7 @@ console.log(`\nTest23 (undefined variable):`);
   try {
     let ser = SerAny.serialize(src, options);
     console.log('    ser:  ', ser);
-    let deser = SerAny.deserialize(ser, SerAny.customObject);
+    let deser = SerAny.deserialize(ser);
     console.log('    deser:', deser);
     jsonTest(src);
   } catch (err) {
@@ -549,6 +555,67 @@ console.log(`\nTest23 (undefined variable):`);
     errors.push('Test23 ' + err.toString())
   }
 }
+
+// Error
+console.log(`\nTest24 (Error):`);
+{
+  console.log(
+    '  let src = new Error("this is a sample error");'
+  );
+  let src = new Error("this is a sample error");
+  console.log('    src: ', src);
+  try {
+    let ser = SerAny.serialize(src, options);
+    console.log('    ser:  ', ser);
+    let deser = SerAny.deserialize(ser);
+    console.log('    deser:', deser);
+    jsonTest(src);
+  } catch (err) {
+    console.log('*** TEST FAILED:', err);
+    errors.push('Test24 ' + err.toString())
+  }
+}
+
+
+// demo
+console.log(`\nTest25 (demo):`);
+{
+  console.log(
+    '  class CustomObj extends Object {}\n' +
+    '    const custom = new CustomObj();\n' +
+    '    Object.assign(custom,{foo:"bar"});\n' +
+    '    let src = {\n' +
+    '      map: new Map([\n' +
+    '        [1, \'one\'],\n' +
+    '        [2, \'two\'],\n' +
+    '        [3, \'three\'],\n' +
+    '      ]),\n' +
+    '      custom\n' +
+    '    };\n'
+  );
+  try {
+    const custom = new CustomObj();
+    custom.foo = 'bar';
+    let src = {
+      undef: undefined,
+      regexp: /abc/gi,
+      bignum: 4000000000000000000n,
+      map: new Map([[1, 'one'], [2, 'two']]),
+      custom,
+      buffer: Buffer.from("hello world")
+    };
+    console.log('    src: ', src);
+    let ser = SerAny.serialize(src, options);
+    console.log('    ser:  ', ser);
+    let deser = SerAny.deserialize(ser);
+    console.log('    deser:', deser);
+    jsonTest(src);
+  } catch (err) {
+    console.log('*** TEST FAILED:', err);
+    errors.push('Test25 ' + err.toString())
+  }
+}
+
 
 function jsonTest(src) {
   try {

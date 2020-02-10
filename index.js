@@ -26,6 +26,8 @@ function serialize (item, options = undefined) {
 
   let iCopy = deepCopy(item);
 
+  // console.log('serialize deepCopy result:',iCopy);
+
   iCopy = serializeObject(iCopy, options, 0);
 
   const saWrapper = {
@@ -45,15 +47,14 @@ function serialize (item, options = undefined) {
       throw 'Error maximum depth exceeded - possible circular reference';
     }
 
-    // let str = "    ";
-    // for (let i=0; i<depth; i++) {
-    //   str += '  ';
-    // }
-    //console.log(str + 'serializeObject obj:', obj);
+    let str = "    ";
+    for (let i=0; i<depth; i++) {
+      str += '  ';
+    }
 
     const objType = objectType(obj);
 
-    //console.log(str + '  serializeObject objType:', objType);
+    // console.log(str + `serializeObject enter ${objType}`);
 
     const objBehaviors = objectBehaviors[objType];
     const objSerialize = objBehaviors.serialize;
@@ -66,18 +67,29 @@ function serialize (item, options = undefined) {
         const elBehaviors = objectBehaviors[elType];
         const elSerialize = elBehaviors.serialize;
         const elIterate = elBehaviors.iterate;
+        const elStartValue = elInfo.value;
+        // console.log(str + `  ${objType} > ${elType} evaluating...`);
         if (elIterate) {
+          // console.log(str + `    ${objType} > ${elType} going deeper...`);
           elInfo.value = serializeObject(elInfo.value, options, depth);
         } else if (elSerialize) {
-          //console.log(str + '  serializing child:', elInfo.value, '...');
+          // console.log(str + `    ${objType} > ${elType} serializing...`);
           elInfo.value = elSerialize(elInfo.value);
+        }
+        const elHasChanged = (elInfo.value !== elStartValue);
+        if (elHasChanged) {
+          // console.log(str +
+          //   `    ${objType} > ${elType} updating child in parent...`);
           objSetChild(obj, elInfo);
-          //console.log(str + '  child is now:', elInfo.value);
+          // console.log(str +
+          //   `      ${objType} > ${elType} parent is now:`, obj);
         }
       });
     }
     if (objSerialize) {
+      // console.log(str + `  ${objType} serializing in place ...`);
       obj = objSerialize(obj);
+      // console.log(str + `  ${objType} afer serializing, obj:`,obj);
     }
     return obj;
   }
@@ -165,43 +177,64 @@ const objectType = (obj) => {
 
   // console.log('        objectType() obj:',obj);
 
+  let type = null;
+  const consName = obj && obj.constructor && obj.constructor.name;
+
   // match primitives right away
   if (isPrimitive(obj) || !obj instanceof Object) {
-    return 'primitive';
+    type = 'primitive';
   }
 
   // force undefined to a serializable type
   // because JSON.stringify strips out properties set to undefined
-  if (typeof obj === 'undefined') {
-    return 'undef';
+  else if (typeof obj === 'undefined') {
+    type = 'undef';
   }
 
   // force BigInt to a serializable type
   // because JSON.stringify throws error on BigInt
-  if (typeof obj === 'bigint') {
-    return 'BigInt';
+  else if (typeof obj === 'bigint') {
+    type = 'BigInt';
   }
 
   // return type of custom serialized objects
-  if (obj._SAType && obj._SAType.includes('_SACustom')) {
-    return obj._SAType;
+  else if (obj._SAType && obj._SAType.includes('_SACustom')) {
+    type = obj._SAType;
   }
 
   // return type of serialized regular objects
-  if (typeof obj._SAType !== 'undefined') {
-    return obj._SAType + '_Serialized';
+  else if (typeof obj._SAType !== 'undefined') {
+    type = obj._SAType + '_Serialized';
   }
 
   // try to match object constructor name
-  const consName = obj.constructor
-    && obj.constructor.name;
-  if (typeof consName === 'string' && consName.length
+  else if (typeof consName === 'string' && consName.length
     && objectBehaviors[consName]) {
-    return consName;
+    type = consName;
   }
 
-  // identify as vanilla Array or Object
-   return (obj instanceof Array) ? 'Array' : 'Object';
+  // identify custom array
+  else if (obj instanceof Array && consName !== 'Array') {
+      type = 'CustomArray';
+  }
+
+  // identify custom object
+  else if (obj instanceof Object && consName !== 'Object') {
+    type = 'CustomObject';
+  }
+
+  // identify as vanilla Array
+  else if (obj instanceof Array) {
+    type = 'CustomObject';
+  }
+
+  // final choice is vanilla Object
+  else {
+    type = 'Object';
+  }
+
+  // console.log('          objectType for obj: ', obj, ' is "', type, '"');
+  return type;
 };
 
 /**
@@ -588,7 +621,7 @@ if (typeof Map !== 'undefined') {
         });
       },
       setValue: (map, elInfo) => {
-       // console.log('setting map value for elInfo:',elInfo);
+        // console.log('setting map value for elInfo:',elInfo);
         map.set(elInfo.key, elInfo.value);
       }
     },
@@ -685,21 +718,64 @@ if (typeof Buffer !== 'undefined') {
   });
 }
 
-// always include Object, primitive, unknown
-Object.assign(objectBehaviors, {
-  "Object": {
-    type: Object,
-    serialize: (obj) => {
-      const cName = obj.constructor.name;
-      if (cName === 'Object') {
-        // no need to serialize vanilla Object
-        return obj;
-      } else {
+// Error
+if (typeof Error !== 'undefined') {
+  Object.assign(objectBehaviors, {
+    "Error" : {
+      type: Error,
+      serialize: (err) => {
         return {
-          _SAType: "_SACustomObject",
-          _SAconstructorName: cName,
-          _SAobject: Object.assign({},obj)
+          _SAType: "Error",
+          _SAmessage: err.message,
+          _SAstack: err.stack
         }
+      }
+    },
+    "Error_Serialized": {
+      deserialize: (srcSer) => {
+        const newErr = Error(srcSer._SAmessage);
+        newErr.stack = srcSer._SAstack;
+        return newErr;
+      }
+    }
+  });
+}
+
+
+// Object, primitive, unknown
+Object.assign(objectBehaviors, {
+  'CustomArray': {
+    serialize: (src) => {
+      return {
+        _SAType: '_SACustomArray',
+        _SAconstructorName: src.constructor.name,
+        _SAvalues: Array.from(src)
+      };
+    },
+    iterate: (array, callback) => {
+      const len = array.length;
+      for (let i = 0; i < len; i++) {
+        const val = array[i];
+        const elInfo = {
+          key: i,
+          value: val,
+          type: objectType(val)
+        };
+        callback(elInfo);
+      }
+    },
+    setValue: (array, elInfo) => {
+      // console.log('setting custom array value for elInfo:',elInfo);
+      array[elInfo.key] = elInfo.value;
+    }
+  },
+
+  "CustomObject": {
+    serialize: (obj) => {
+      return {
+        _SAType: "_SACustomObject",
+        _SAconstructorName: obj.constructor.name,
+        _SAobject: Object.assign({},obj)
       }
     },
     iterate: (obj, callback) => {
@@ -717,7 +793,41 @@ Object.assign(objectBehaviors, {
       }
     },
     setValue: (obj, elInfo) => {
-     // console.log('setting Object value for elInfo:',elInfo);
+      // console.log('setting CustomObject value for elInfo:',elInfo);
+      obj[elInfo.key] = elInfo.value;
+    }
+  },
+  "Object": {
+    type: Object,
+    // serialize: (obj) => {
+    //   const cName = obj.constructor.name;
+    //   if (cName === 'Object') {
+    //     // no need to serialize vanilla Object
+    //     return obj;
+    //   } else {
+    //     return {
+    //       _SAType: "_SACustomObject",
+    //       _SAconstructorName: cName,
+    //       _SAobject: Object.assign({},obj)
+    //     }
+    //   }
+    // },
+    iterate: (obj, callback) => {
+      const keys = Object.keys(obj);
+      const len = keys.length;
+      for (let i = 0; i < len; i++) {
+        const key = keys[i];
+        const value = obj[key];
+        const elInfo = {
+          key: key,
+          value: value,
+          type: objectType(value),
+        };
+        callback(elInfo);
+      }
+    },
+    setValue: (obj, elInfo) => {
+      // console.log('            setting Object value for elInfo:',elInfo);
       obj[elInfo.key] = elInfo.value;
     }
   },

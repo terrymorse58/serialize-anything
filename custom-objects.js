@@ -12,7 +12,10 @@
  * = the custom object type(s) are vsible
  */
 
-SerAny.customObject = function (name) {
+// copied from `custom-objects.js` to handle custom objects
+SerAny._custom = function (name) {
   let typeExists = eval('typeof ' + name + '!== "undefined"' );
   return typeExists ? eval('new ' + name + '()') : null;
 };
+SerAny._ds = SerAny.deserialize;
+SerAny.deserialize = source => SerAny._ds(source, SerAny._custom);
