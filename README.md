@@ -43,7 +43,7 @@ ArrayBuffer | 🗑 | ✅ | ❌ | ✅
 WeakSet | 🗑 | 🗑 | ❌ | ❌
 WeakMap | 🗑 | 🗑 | ❌ | ❌
 
-&nbsp; &nbsp; &nbsp; JSON.* — JSON.stringify/parse
+&nbsp; &nbsp; &nbsp; JSON.* — JSON.stringify/parse<br>
 &nbsp; &nbsp; &nbsp; s-javascript — [serialize-javascript](https://github.com/yahoo/serialize-javascript)<br>
 &nbsp; &nbsp; &nbsp; s-to-js — [serialize-to-js](https://github.com/commenthol/serialize-to-js)<br>
 &nbsp; &nbsp; &nbsp; s-anything — [serialize-anything](https://github.com/terrymorse58/serialize-anything)
