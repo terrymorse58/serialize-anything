@@ -1,6 +1,12 @@
 # serialize-anything
 A universal serializer and de-serializer for JavaScript data
 ---
+![GitHub top language](https://img.shields.io/github/languages/top/terrymorse58/serialize-anything)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/terrymorse58/serialize-anything)
+![David](https://img.shields.io/david/terrymorse58/serialize-anything)
+![NPM Downloads](https://img.shields.io/npm/dw/serialize-anything)
+![NPM License](https://img.shields.io/npm/l/serialize-anything)
+[![Twitter](https://img.shields.io/twitter/follow/terrymorse.svg?style=social&label=@terrymorse)](https://twitter.com/terrymorse)
 
 ## Overview
 **serialize-anything** serializes and de-serializes virtually all JavaScript standard and custom data types, with no data loss.
@@ -37,9 +43,10 @@ ArrayBuffer | 🗑 | ✅ | ❌ | ✅
 WeakSet | 🗑 | 🗑 | ❌ | ❌
 WeakMap | 🗑 | 🗑 | ❌ | ❌
 
-&nbsp; &nbsp; &nbsp; s-javascript: [serialize-javascript](https://github.com/yahoo/serialize-javascript)<br>
-&nbsp; &nbsp; &nbsp; s-to-js: [serialize-to-js](https://github.com/commenthol/serialize-to-js)<br>
-&nbsp; &nbsp; &nbsp; s-anything: [serialize-anything](https://github.com/terrymorse58/serialize-anything/blob/master/README.md)
+&nbsp; &nbsp; &nbsp; JSON.* — JSON.stringify/parse
+&nbsp; &nbsp; &nbsp; s-javascript — [serialize-javascript](https://github.com/yahoo/serialize-javascript)<br>
+&nbsp; &nbsp; &nbsp; s-to-js — [serialize-to-js](https://github.com/commenthol/serialize-to-js)<br>
+&nbsp; &nbsp; &nbsp; s-anything — [serialize-anything](https://github.com/terrymorse58/serialize-anything)
 
 ---
 ## Installation
