@@ -1,6 +1,6 @@
 {
   "name": "serialize-anything",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "serialize and de-serialize any JavaScript data",
   "main": "index.js",
   "repository": {
@@ -9,6 +9,9 @@
   },
   "scripts": {
     "test": "node test/test-serialize.js > test/result-serialize.txt",
+    "test-to-js": "node test/test-serialize-to-js.js > test/result-serialize-to-js.txt",
+    "test-javascript": "node test/test-serialize-javascript.js > test/result-serialize-javascript.txt",
+    "test-json": "node test/test-json.js > test/result-json.txt",
     "build": "bash build.sh"
   },
   "keywords": [
@@ -33,6 +36,8 @@
     "browserify": "^16.5.0",
     "gulp": "^4.0.2",
     "gulp-minify": "^3.1.0",
-    "gulp-rename": "^2.0.0"
+    "gulp-rename": "^2.0.0",
+    "serialize-javascript": "^2.1.2",
+    "serialize-to-js": "^3.1.1"
   }
 }

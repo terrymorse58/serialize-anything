@@ -1,15 +1,7 @@
 // test-serialize.js - test of serialize-all
 
-const SerAny = require('../index.js');
+const serialize = require('serialize-to-js');
 const TS = require('./test-suite');
-
-// copied from custom-objects.js to handle custom objects
-SerAny._custom = function (name) {
-  let typeExists = eval('typeof ' + name + '!== "undefined"' );
-  return typeExists ? eval('new ' + name + '()') : null;
-};
-SerAny._ds = SerAny.deserialize;
-SerAny.deserialize = source => SerAny._ds(source, SerAny._custom);
 
 // our custom objects
 class CustomObj extends Object {}
@@ -21,14 +13,19 @@ class CustomArray extends Array {
 }
 
 // serialize options
-const options = {
-  maxDepth: 20,
-  pretty: true
-};
+const options = null;
+
+function deserialize (ser) {
+  try {
+    return eval('(' + ser + ')');
+  } catch (err) {
+    throw `Error could not eval '(${ser})'`;
+  }
+}
 
 // run every test
 TS.tests.forEach(test =>
-  test(SerAny.serialize, SerAny.deserialize, options));
+  test(serialize, deserialize, options));
 
 console.log("\nEnd of test.");
 const errors = TS.errors;
