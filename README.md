@@ -203,7 +203,7 @@ SerAny.serialize(source [, options])
 Restore serialized data created by `SerAny.serialize()`.
 #### Syntax
 ```javascript
-deserialize(source)
+SerAny.deserialize(source)
 ```
 #### Parameters
 `source`<br>
@@ -213,3 +213,4 @@ deserialize(source)
 (any type) - The de-serialized data, matching the type of the original data.
 
 ---
+
