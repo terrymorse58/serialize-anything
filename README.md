@@ -62,8 +62,8 @@ deserialized = SerAny.deserialize(serialized);
 ```
 ---
 ### Example
+Serialize some challenging data:
 ```javascript
-// serialize
 const custom = new CustomObj();
 custom.foo = 'bar';
 let source = {
@@ -75,11 +75,22 @@ let source = {
   buffer: Buffer.from("hello world")
 };
 
+/* source:
+{
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000n,
+  map: Map(2) { 1 => 'one', 2 => 'two' },
+  custom: CustomObj { foo: 'bar' },
+  buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+}
+*/
+
 const ser = SerAny.serialize(source);
 ```
-Serialized result:
+Serialized JSON output:
 ```json
-'{
+{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "undef": { "_SAType": "undef" },
@@ -106,13 +117,14 @@ Serialized result:
       "_SAutf8String": "hello world"
     }
   }
-}'
+}
 ```
 Deserialized:
 ```javascript
 const deser = SerAny.deserialize(ser);
 
-deser == {
+/* deser:
+{
   undef: undefined,
   regexp: /abc/gi,
   bignum: 4000000000000000000n,
@@ -120,7 +132,9 @@ deser == {
   custom: CustomObj { foo: 'bar' },
   buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
 }
+*/
 ```
+
 ---
 ## Functions
 
@@ -183,13 +197,15 @@ types which the built-in standard
 *JSON.** converts **Date** object to a string:
 ```javascript
 // serialize-anything:
-type: Date
-value: Sun Feb 09 2020 10:52:49 GMT-0800 (Pacific Standard Time)
+typeof: 'object'
+toString(): 'Mon Feb 10 2020 21:27:19 GMT-0800 (Pacific Standard Time)'
+getTime(): 1581398566403
 ```
 ```javascript
 // JSON.*:
-type: String
-value: "2020-02-09T17:33:12.061Z"
+typeof: 'string'
+value: '2020-02-11T05:27:19.305Z'
+getTime(): TypeError: getTime is not a function
 ```
 #### Map
 *JSON.** converts standard JavaScript **Map** object into a vanilla, empty Object:
