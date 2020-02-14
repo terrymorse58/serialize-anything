@@ -95,6 +95,55 @@ function serialize (item, options = undefined) {
 
 }
 
+// deserialize children of object
+const deserializeChildren = (obj, getCustomObject, depth, objBehaviors) => {
+
+  const objIterate = objBehaviors.iterate;
+  if (!objIterate) { return; }
+
+  const objSetChild = objBehaviors.setValue;
+
+  objIterate(obj, (elInfo) => {
+    const elType = elInfo.type;
+    const elBehaviors = objectBehaviors[elType];
+    const elDeserialize = elBehaviors.deserialize;
+    const elIterate = elBehaviors.iterate;
+    if (elIterate) {
+      elInfo.value = deserializeObject(elInfo.value, getCustomObject, depth);
+    } else if (elDeserialize) {
+      elInfo.value = elDeserialize(elInfo.value, getCustomObject);
+      objSetChild(obj, elInfo);
+    }
+  });
+};
+
+// recursively deserialize the object (breadth first)
+function deserializeObject (obj, getCustomObject, depth) {
+  depth++;
+
+  // debug
+  // let str = '    '; for (let i = 0; i < depth; i++) {str += '  ';}
+  // console.log(str + 'deserializeObject obj:', obj);
+
+  let objType = objectType(obj);
+
+  // console.log(str + '  deserializeObject object type:', objType);
+
+  let objBehaviors = objectBehaviors[objType];
+  const objDeserialize = objBehaviors.deserialize;
+
+  if (objDeserialize) {
+    obj = objDeserialize(obj, getCustomObject);
+    objType = objectType(obj);
+    objBehaviors = objectBehaviors[objType];
+  }
+
+  deserializeChildren(obj, getCustomObject, depth, objBehaviors);
+
+  return obj;
+}
+
+
 /**
  * deserialize data that was created from serialize
  * @param {string} jsonData - the data to deserialize
@@ -116,52 +165,6 @@ function deserialize (jsonData, getCustomObject = undefined) {
   iCopy = iCopy._SA_Content;
 
   return deserializeObject(iCopy, getCustomObject, 0);
-
-  // recursively deserialize the object (breadth first)
-  function deserializeObject (obj, getCustomObject, depth) {
-    depth++;
-
-    // debug
-    let str = '    ';
-    for (let i = 0; i < depth; i++) {
-      str += '  ';
-    }
-    // console.log(str + 'deserializeObject obj:', obj);
-
-    let objType = objectType(obj);
-
-    // console.log(str + '  deserializeObject object type:', objType);
-
-    let objBehaviors = objectBehaviors[objType];
-    const objDeserialize = objBehaviors.deserialize;
-
-    if (objDeserialize) {
-      obj = objDeserialize(obj, getCustomObject);
-      objType = objectType(obj);
-      objBehaviors = objectBehaviors[objType];
-    }
-
-    const objIterate = objBehaviors.iterate;
-
-    if (objIterate) {
-      const objSetChild = objBehaviors.setValue;
-      objIterate(obj, (elInfo) => {
-        const elType = elInfo.type;
-        const elBehaviors = objectBehaviors[elType];
-        const elDeserialize = elBehaviors.deserialize;
-        const elIterate = elBehaviors.iterate;
-        if (elIterate) {
-          elInfo.value = deserializeObject(elInfo.value, getCustomObject, depth);
-        } else if (elDeserialize) {
-          // console.log(str + '  deserializing child:', elInfo.value, '...');
-          elInfo.value = elDeserialize(elInfo.value, getCustomObject);
-          objSetChild(obj, elInfo);
-          // console.log(str + '  child is now:', elInfo.value);
-        }
-      });
-    }
-    return obj;
-  }
 }
 
 // return true if the item is a primitive data type
@@ -532,11 +535,11 @@ if (typeof BigInt64Array !== 'undefined') {
     "BigInt64Array": {
       type: BigInt64Array,
       serialize: (src) => {
-        let values = [];
-        src.forEach(bigint => values.push(bigint.toString()));
+        let vals = [];
+        src.forEach(bigint => vals.push(bigint.toString()));
         return {
           _SAType: "BigInt64Array",
-          _SAvalues: values
+          _SAvalues: vals
         }
       }
     },
@@ -554,7 +557,7 @@ if (typeof BigUint64Array !== 'undefined') {
       type: BigUint64Array,
       serialize: (src) => {
         let values = [];
-        src.forEach(bigint => values.push(bigint.toString()));
+        src.forEach(num => values.push(num.toString()));
         return {
           _SAType: "BigUint64Array",
           _SAvalues: values
