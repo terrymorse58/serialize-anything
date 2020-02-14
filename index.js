@@ -330,14 +330,14 @@ const objectBehaviors = {
     },
   },
   'undef': {
-    serialize: (src) => {
+    serialize: () => {
       return {
         _SAType: 'undef'
       }
     },
   },
   'undef_Serialized': {
-    deserialize: (srcSer) => {
+    deserialize: () => {
       return undefined;
     }
   }
