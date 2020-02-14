@@ -1,4 +1,4 @@
-// test-serialize.js - test of JSON.stringify -> JSON.parse
+// test-json.js - test of JSON.stringify -> JSON.parse
 
 const TS = require('./test-suite');
 

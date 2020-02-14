@@ -1,4 +1,4 @@
-// test-serialize.js - test of serialize-all
+// test-serialize-to-js.js - test of serialize-to-js
 
 const serialize = require('serialize-to-js');
 const TS = require('./test-suite');

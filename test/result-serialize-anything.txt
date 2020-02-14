@@ -1,17 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2020-02-11T15:01:57.269Z
+    src:   2020-02-14T18:13:55.148Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1581433317269
+    "_SAtimestamp": 1581704035148
   }
 }'
-    deser: Date: Tue Feb 11 2020 07:01:57 GMT-0800 (Pacific Standard Time)
-    JSON:  2020-02-11T15:01:57.269Z
-    json: String: 2020-02-11T15:01:57.269Z
+    deser: Date: Fri Feb 14 2020 10:13:55 GMT-0800 (Pacific Standard Time)
 
 Test2 (Map):
   let src = new Map();
@@ -21,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-11T15:01:57.311Z
+  { foo: 'bar' } => 2020-02-14T18:13:55.150Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -38,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581433317311
+          "_SAtimestamp": 1581704035150
         }
       ]
     ]
@@ -46,9 +44,8 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-11T15:01:57.311Z
+  { foo: 'bar' } => 2020-02-14T18:13:55.150Z
 }
-    JSON:  {}
 
 Test3 (Function):
   let src = function foo (x) { return x + 1;};
@@ -62,9 +59,6 @@ Test3 (Function):
   }
 }'
     deser: [Function: foo]
-    deser.toString():  function foo (x) { return x + 1;}
-    deser(10): 11
-    *** JSON Error SyntaxError: Unexpected token u in JSON at position 0
 
 Test4: (RegExp)
   let src = [1,2,/abc/i];
@@ -82,7 +76,6 @@ Test4: (RegExp)
   ]
 }'
     deser: [ 1, 2, /abc/i ]
-    JSON:  [ 1, 2, {} ]
 
 Test5 (Int8Array):
   let src = Int8Array.from([3, 4, 42]);
@@ -99,7 +92,6 @@ Test5 (Int8Array):
   }
 }'
     deser: Int8Array [ 3, 4, 42 ]
-    JSON:  { '0': 3, '1': 4, '2': 42 }
 
 Test6 (Uint8Array):
   let src = Uint8Array.from([3, 128, 64]);
@@ -116,7 +108,6 @@ Test6 (Uint8Array):
   }
 }'
     deser: Uint8Array [ 3, 128, 64 ]
-    JSON:  { '0': 3, '1': 128, '2': 64 }
 
 Test7 (Int16Array):
   let src = Int16Array.from([32, 128, 64]);
@@ -133,7 +124,6 @@ Test7 (Int16Array):
   }
 }'
     deser: Int16Array [ 32, 128, 64 ]
-    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test8 (Uint16Array):
   let src = Uint16Array.from([32, 128, 64]);
@@ -150,7 +140,6 @@ Test8 (Uint16Array):
   }
 }'
     deser: Uint16Array [ 32, 128, 64 ]
-    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test9 (Int32Array):
   let src = Int32Array.from([32, 128, 64]);
@@ -167,7 +156,6 @@ Test9 (Int32Array):
   }
 }'
     deser: Int32Array [ 32, 128, 64 ]
-    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test10 (Uint32Array):
   let src = Uint32Array.from([32, 128, 64]);
@@ -184,7 +172,6 @@ Test10 (Uint32Array):
   }
 }'
     deser: Uint32Array [ 32, 128, 64 ]
-    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test11 (Float32Array):
   let src = Float32Array.from([32, 128, 64]);
@@ -201,7 +188,6 @@ Test11 (Float32Array):
   }
 }'
     deser: Float32Array [ 32, 128, 64 ]
-    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test12 (Float64Array):
   let src = Float64Array.from([32, 128, 64]);
@@ -218,7 +204,6 @@ Test12 (Float64Array):
   }
 }'
     deser: Float64Array [ 32, 128, 64 ]
-    JSON:  { '0': 32, '1': 128, '2': 64 }
 
 Test13 (BigInt64Array):
   let src = BigInt64Array.from([32, 128, 64]);
@@ -235,7 +220,6 @@ Test13 (BigInt64Array):
   }
 }'
     deser: BigInt64Array [ 3n, 4n, 42n ]
-    *** JSON Error TypeError: Do not know how to serialize a BigInt
 
 Test14 (BigUint64Array):
   let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
@@ -251,7 +235,6 @@ Test14 (BigUint64Array):
     ]
   }
 }'
-    *** JSON Error TypeError: Do not know how to serialize a BigInt
     deser: BigUint64Array [ 3000000000000000000n, 4n, 42n ]
 
 Test15 (ArrayBuffer):
@@ -272,11 +255,10 @@ Test15 (ArrayBuffer):
   [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
   byteLength: 8
 }
-    JSON:  { '0': 1, '1': 2, '2': 3, '3': 4, '4': 5, '5': 127, '6': 0, '7': 0 }
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-11T15:01:57.335Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-14T18:13:55.159Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -288,14 +270,13 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1581433317335
+          "_SAtimestamp": 1581704035159
         }
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-11T15:01:57.335Z } }
-    JSON:  {}
+    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-14T18:13:55.159Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -322,14 +303,6 @@ Test19 (Buffer):
   }
 }'
     deser: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
-    JSON:  {
-  type: 'Buffer',
-  data: [
-    104, 101, 108, 108,
-    111,  32, 119, 111,
-    114, 108, 100
-  ]
-}
 
 Test20 (CustomObject):
   class CustomObject extends Object {
@@ -346,8 +319,8 @@ Test20 (CustomObject):
   }
 }'
     deser: CustomObject {}
+    deser.constructor.name:  CustomObject
     deser.custom():  I am a custom Object
-    JSON:  {}
 
 Test21 (CustomArray with RegExp):
   class CustomArray extends Array {
@@ -381,7 +354,6 @@ Test21 (CustomArray with RegExp):
   }
 }'
     deser: CustomArray [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
-    JSON:  [ 1, 2, 'foo', { key: [ 1, 2, 3, {} ] } ]
 
 Test22 (Array containing BigInt):
   let src = [1, 2, 3000000000n];
@@ -398,7 +370,6 @@ Test22 (Array containing BigInt):
   ]
 }'
     deser: [ 1, 2, 3000000000n ]
-    *** JSON Error TypeError: Do not know how to serialize a BigInt
 
 Test23 (Object containing undefined prop):
   let src = {foo: "bar", notSet: undefined};
@@ -413,7 +384,6 @@ Test23 (Object containing undefined prop):
   }
 }'
     deser: { foo: 'bar', notSet: undefined }
-    JSON:  { foo: 'bar' }
 
 Test24 (undefined variable):
   let src = undefined;
@@ -425,15 +395,14 @@ Test24 (undefined variable):
   }
 }'
     deser: undefined
-    *** JSON Error SyntaxError: Unexpected token u in JSON at position 0
 
 Test25 (Error):
   let src = new Error("this is a sample error");
     src:  Error: this is a sample error
-    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:628:13)
-    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:31:3
+    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)
+    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:31:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:30:10)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:30:10)
     at Module._compile (internal/modules/cjs/loader.js:1139:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
     at Module.load (internal/modules/cjs/loader.js:988:32)
@@ -445,21 +414,20 @@ Test25 (Error):
   "_SA_Content": {
     "_SAType": "Error",
     "_SAmessage": "this is a sample error",
-    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:628:13)\n    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:31:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:30:10)\n    at Module._compile (internal/modules/cjs/loader.js:1139:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)\n    at Module.load (internal/modules/cjs/loader.js:988:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:896:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)\n    at internal/main/run_main_module.js:17:47"
+    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)\n    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:31:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:30:10)\n    at Module._compile (internal/modules/cjs/loader.js:1139:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)\n    at Module.load (internal/modules/cjs/loader.js:988:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:896:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)\n    at internal/main/run_main_module.js:17:47"
   }
 }'
     deser: Error: this is a sample error
-    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:628:13)
-    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:31:3
+    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)
+    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:31:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize.js:30:10)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:30:10)
     at Module._compile (internal/modules/cjs/loader.js:1139:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
     at Module.load (internal/modules/cjs/loader.js:988:32)
     at Function.Module._load (internal/modules/cjs/loader.js:896:14)
     at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
     at internal/main/run_main_module.js:17:47
-    JSON:  {}
 
 Test26 (demo):
   class CustomObj extends Object {}
@@ -531,7 +499,6 @@ Test26 (demo):
   custom: CustomObj { foo: 'bar' },
   buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
 }
-    *** JSON Error TypeError: Do not know how to serialize a BigInt
 
 End of test.
 

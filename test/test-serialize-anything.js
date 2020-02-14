@@ -1,4 +1,4 @@
-// test-serialize.js - test of serialize-all
+// test-serialize-anything.js - test of serialize-anything
 
 const SerAny = require('../index.js');
 const TS = require('./test-suite');

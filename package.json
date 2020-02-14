@@ -8,7 +8,7 @@
     "url": "https://github.com/terrymorse58/serialize-anything.git"
   },
   "scripts": {
-    "test": "node test/test-serialize.js > test/result-serialize.txt",
+    "test": "node test/test-serialize-anything.js > test/result-serialize-anything.txt",
     "test-to-js": "node test/test-serialize-to-js.js > test/result-serialize-to-js.txt",
     "test-javascript": "node test/test-serialize-javascript.js > test/result-serialize-javascript.txt",
     "test-json": "node test/test-json.js > test/result-json.txt",

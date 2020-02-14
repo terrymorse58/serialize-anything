@@ -500,7 +500,8 @@ function test20 (serialize, deserialize, options) {
       console.log(`    ser:  '${ser}'`);
       let deser = deserialize(ser);
       console.log('    deser:', deser);
-      if (!(deser instanceof CustomObject)) {
+      console.log('    deser.constructor.name: ', deser.constructor.name);
+      if (deser.constructor.name !== 'CustomObject') {
         throw `Error did not maintain CustomObject type`;
       }
       if (typeof deser.custom === 'undefined') {
@@ -538,10 +539,10 @@ function test21 (serialize, deserialize, options) {
     console.log(`    ser:  '${ser}'`);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
-    if (!(deser instanceof CustomArray)) {
-      throw `Error did not maintain CustomObject type`;
+    if (deser.constructor.name !== 'CustomArray') {
+      throw `Error did not maintain CustomArray type`;
     }
-    if (!deser.custom) {
+    if (typeof deser.custom !== 'function') {
       throw `Error did not maintain CustomArray method 'custom'`;
     }
   } catch (err) {

@@ -7,6 +7,60 @@ const defaultOptions = {
   pretty: false
 };
 
+// recursively serialize object in-place (depth first)
+function serializeObject (obj, options, depth) {
+
+  if (++depth > options.maxDepth) {
+    throw 'Error maximum depth exceeded - possible circular reference';
+  }
+
+  let str = "    ";
+  for (let i=0; i<depth; i++) {
+    str += '  ';
+  }
+
+  const objType = objectType(obj);
+
+  // console.log(str + `serializeObject enter ${objType}`);
+
+  const objBehaviors = objectBehaviors[objType];
+  const objSerialize = objBehaviors.serialize;
+  const objIterate = objBehaviors.iterate;
+  const objSetChild = objBehaviors.setValue;
+
+  if (objIterate) {
+    objIterate(obj, (elInfo) => {
+      const elType = elInfo.type;
+      const elBehaviors = objectBehaviors[elType];
+      const elSerialize = elBehaviors.serialize;
+      const elIterate = elBehaviors.iterate;
+      const elStartValue = elInfo.value;
+      // console.log(str + `  ${objType} > ${elType} evaluating...`);
+      if (elIterate) {
+        // console.log(str + `    ${objType} > ${elType} going deeper...`);
+        elInfo.value = serializeObject(elInfo.value, options, depth);
+      } else if (elSerialize) {
+        // console.log(str + `    ${objType} > ${elType} serializing...`);
+        elInfo.value = elSerialize(elInfo.value);
+      }
+      const elHasChanged = (elInfo.value !== elStartValue);
+      if (elHasChanged) {
+        // console.log(str +
+        //   `    ${objType} > ${elType} updating child in parent...`);
+        objSetChild(obj, elInfo);
+        // console.log(str +
+        //   `      ${objType} > ${elType} parent is now:`, obj);
+      }
+    });
+  }
+  if (objSerialize) {
+    // console.log(str + `  ${objType} serializing in place ...`);
+    obj = objSerialize(obj);
+    // console.log(str + `  ${objType} afer serializing, obj:`,obj);
+  }
+  return obj;
+}
+
 /**
  * serialize the input
  * @param {*} item - the item to serialize
@@ -38,61 +92,6 @@ function serialize (item, options = undefined) {
   return options.pretty
     ? JSON.stringify(saWrapper, null, 2)
     : JSON.stringify(saWrapper);
-
-  // recursively serialize object in-place (depth first)
-  function serializeObject (obj, options, depth) {
-    depth++;
-
-    if (depth > options.maxDepth) {
-      throw 'Error maximum depth exceeded - possible circular reference';
-    }
-
-    let str = "    ";
-    for (let i=0; i<depth; i++) {
-      str += '  ';
-    }
-
-    const objType = objectType(obj);
-
-    // console.log(str + `serializeObject enter ${objType}`);
-
-    const objBehaviors = objectBehaviors[objType];
-    const objSerialize = objBehaviors.serialize;
-    const objIterate = objBehaviors.iterate;
-    const objSetChild = objBehaviors.setValue;
-
-    if (objIterate) {
-      objIterate(obj, (elInfo) => {
-        const elType = elInfo.type;
-        const elBehaviors = objectBehaviors[elType];
-        const elSerialize = elBehaviors.serialize;
-        const elIterate = elBehaviors.iterate;
-        const elStartValue = elInfo.value;
-        // console.log(str + `  ${objType} > ${elType} evaluating...`);
-        if (elIterate) {
-          // console.log(str + `    ${objType} > ${elType} going deeper...`);
-          elInfo.value = serializeObject(elInfo.value, options, depth);
-        } else if (elSerialize) {
-          // console.log(str + `    ${objType} > ${elType} serializing...`);
-          elInfo.value = elSerialize(elInfo.value);
-        }
-        const elHasChanged = (elInfo.value !== elStartValue);
-        if (elHasChanged) {
-          // console.log(str +
-          //   `    ${objType} > ${elType} updating child in parent...`);
-          objSetChild(obj, elInfo);
-          // console.log(str +
-          //   `      ${objType} > ${elType} parent is now:`, obj);
-        }
-      });
-    }
-    if (objSerialize) {
-      // console.log(str + `  ${objType} serializing in place ...`);
-      obj = objSerialize(obj);
-      // console.log(str + `  ${objType} afer serializing, obj:`,obj);
-    }
-    return obj;
-  }
 
 }
 
@@ -240,6 +239,20 @@ const objectType = (obj) => {
 /**
  * define object behaviors
  */
+
+const arrayIterate = (array, callback) => {
+  const len = array.length;
+  for (let i = 0; i < len; i++) {
+    const val = array[i];
+    const elInfo = {
+      key: i,
+      value: val,
+      type: objectType(val)
+    };
+    callback(elInfo);
+  }
+};
+
 const objectBehaviors = {
   "Array": {
     type: Array,
@@ -255,18 +268,7 @@ const objectBehaviors = {
         return src;
       }
     },
-    iterate: (array, callback) => {
-      const len = array.length;
-      for (let i = 0; i < len; i++) {
-        const val = array[i];
-        const elInfo = {
-          key: i,
-          value: val,
-          type: objectType(val)
-        };
-        callback(elInfo);
-      }
-    },
+    iterate: arrayIterate,
     setValue: (array, elInfo) => {
       // console.log('setting array value for elInfo:',elInfo);
       array[elInfo.key] = elInfo.value;
@@ -741,6 +743,20 @@ if (typeof Error !== 'undefined') {
   });
 }
 
+const objectIterate = (obj, callback) => {
+  const keys = Object.keys(obj);
+  const len = keys.length;
+  for (let i = 0; i < len; i++) {
+    const key = keys[i];
+    const value = obj[key];
+    const elInfo = {
+      key: key,
+      value: value,
+      type: objectType(value),
+    };
+    callback(elInfo);
+  }
+};
 
 // Object, primitive, unknown
 Object.assign(objectBehaviors, {
@@ -752,18 +768,7 @@ Object.assign(objectBehaviors, {
         _SAvalues: Array.from(src)
       };
     },
-    iterate: (array, callback) => {
-      const len = array.length;
-      for (let i = 0; i < len; i++) {
-        const val = array[i];
-        const elInfo = {
-          key: i,
-          value: val,
-          type: objectType(val)
-        };
-        callback(elInfo);
-      }
-    },
+    iterate: arrayIterate,
     setValue: (array, elInfo) => {
       // console.log('setting custom array value for elInfo:',elInfo);
       array[elInfo.key] = elInfo.value;
@@ -778,20 +783,7 @@ Object.assign(objectBehaviors, {
         _SAobject: Object.assign({},obj)
       }
     },
-    iterate: (obj, callback) => {
-      const keys = Object.keys(obj);
-      const len = keys.length;
-      for (let i = 0; i < len; i++) {
-        const key = keys[i];
-        const value = obj[key];
-        const elInfo = {
-          key: key,
-          value: value,
-          type: objectType(value),
-        };
-        callback(elInfo);
-      }
-    },
+    iterate: objectIterate,
     setValue: (obj, elInfo) => {
       // console.log('setting CustomObject value for elInfo:',elInfo);
       obj[elInfo.key] = elInfo.value;
@@ -799,33 +791,7 @@ Object.assign(objectBehaviors, {
   },
   "Object": {
     type: Object,
-    // serialize: (obj) => {
-    //   const cName = obj.constructor.name;
-    //   if (cName === 'Object') {
-    //     // no need to serialize vanilla Object
-    //     return obj;
-    //   } else {
-    //     return {
-    //       _SAType: "_SACustomObject",
-    //       _SAconstructorName: cName,
-    //       _SAobject: Object.assign({},obj)
-    //     }
-    //   }
-    // },
-    iterate: (obj, callback) => {
-      const keys = Object.keys(obj);
-      const len = keys.length;
-      for (let i = 0; i < len; i++) {
-        const key = keys[i];
-        const value = obj[key];
-        const elInfo = {
-          key: key,
-          value: value,
-          type: objectType(value),
-        };
-        callback(elInfo);
-      }
-    },
+    iterate: objectIterate,
     setValue: (obj, elInfo) => {
       // console.log('            setting Object value for elInfo:',elInfo);
       obj[elInfo.key] = elInfo.value;
