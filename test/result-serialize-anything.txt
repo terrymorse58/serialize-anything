@@ -1,16 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2020-02-14T18:43:31.678Z
+    src:   2020-02-14T19:38:32.976Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1581705811678
+    "_SAtimestamp": 1581709112976
   }
 }'
-      deserializeObject obj: { _SAType: 'Date', _SAtimestamp: 1581705811678 }
-    deser: Date: Fri Feb 14 2020 10:43:31 GMT-0800 (Pacific Standard Time)
+    deser: Date: Fri Feb 14 2020 11:38:32 GMT-0800 (Pacific Standard Time)
 
 Test2 (Map):
   let src = new Map();
@@ -20,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-14T18:43:31.681Z
+  { foo: 'bar' } => 2020-02-14T19:38:32.979Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -37,19 +36,15 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581705811681
+          "_SAtimestamp": 1581709112979
         }
       ]
     ]
   }
 }'
-      deserializeObject obj: {
-  _SAType: 'Map',
-  _SAkvPairs: [ [ 'key1', 'key1 value' ], [ [Object], [Object] ] ]
-}
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-14T18:43:31.681Z
+  { foo: 'bar' } => 2020-02-14T19:38:32.979Z
 }
 
 Test3 (Function):
@@ -63,10 +58,6 @@ Test3 (Function):
     "_SAfunction": "function foo (x) { return x + 1;}"
   }
 }'
-      deserializeObject obj: {
-  _SAType: 'Function',
-  _SAfunction: 'function foo (x) { return x + 1;}'
-}
     deser: [Function: foo]
 
 Test4: (RegExp)
@@ -84,7 +75,6 @@ Test4: (RegExp)
     }
   ]
 }'
-      deserializeObject obj: [ 1, 2, { _SAType: 'RegExp', _SAsource: 'abc', _SAflags: 'i' } ]
     deser: [ 1, 2, /abc/i ]
 
 Test5 (Int8Array):
@@ -101,7 +91,6 @@ Test5 (Int8Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Int8Array', _SAvalues: [ 3, 4, 42 ] }
     deser: Int8Array [ 3, 4, 42 ]
 
 Test6 (Uint8Array):
@@ -118,7 +107,6 @@ Test6 (Uint8Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Uint8Array', _SAvalues: [ 3, 128, 64 ] }
     deser: Uint8Array [ 3, 128, 64 ]
 
 Test7 (Int16Array):
@@ -135,7 +123,6 @@ Test7 (Int16Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Int16Array', _SAvalues: [ 32, 128, 64 ] }
     deser: Int16Array [ 32, 128, 64 ]
 
 Test8 (Uint16Array):
@@ -152,7 +139,6 @@ Test8 (Uint16Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Uint16Array', _SAvalues: [ 32, 128, 64 ] }
     deser: Uint16Array [ 32, 128, 64 ]
 
 Test9 (Int32Array):
@@ -169,7 +155,6 @@ Test9 (Int32Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Int32Array', _SAvalues: [ 32, 128, 64 ] }
     deser: Int32Array [ 32, 128, 64 ]
 
 Test10 (Uint32Array):
@@ -186,7 +171,6 @@ Test10 (Uint32Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Uint32Array', _SAvalues: [ 32, 128, 64 ] }
     deser: Uint32Array [ 32, 128, 64 ]
 
 Test11 (Float32Array):
@@ -203,7 +187,6 @@ Test11 (Float32Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Float32Array', _SAvalues: [ 32, 128, 64 ] }
     deser: Float32Array [ 32, 128, 64 ]
 
 Test12 (Float64Array):
@@ -220,7 +203,6 @@ Test12 (Float64Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Float64Array', _SAvalues: [ '32', '128', '64' ] }
     deser: Float64Array [ 32, 128, 64 ]
 
 Test13 (BigInt64Array):
@@ -237,7 +219,6 @@ Test13 (BigInt64Array):
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'BigInt64Array', _SAvalues: [ '3', '4', '42' ] }
     deser: BigInt64Array [ 3n, 4n, 42n ]
 
 Test14 (BigUint64Array):
@@ -254,10 +235,6 @@ Test14 (BigUint64Array):
     ]
   }
 }'
-      deserializeObject obj: {
-  _SAType: 'BigUint64Array',
-  _SAvalues: [ '3000000000000000000', '4', '42' ]
-}
     deser: BigUint64Array [ 3000000000000000000n, 4n, 42n ]
 
 Test15 (ArrayBuffer):
@@ -274,13 +251,6 @@ Test15 (ArrayBuffer):
   byteLength: 8
 }
     ser:  '{"_Serialize_Any_Encoded":true,"_SA_Content":{"_SAType":"ArrayBuffer","_SAvalues":[1,2,3,4,5,127,0,0]}}'
-      deserializeObject obj: {
-  _SAType: 'ArrayBuffer',
-  _SAvalues: [
-    1,   2, 3, 4,
-    5, 127, 0, 0
-  ]
-}
     deser:  ArrayBuffer {
   [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
   byteLength: 8
@@ -288,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-14T18:43:31.690Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-14T19:38:32.987Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -300,15 +270,13 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1581705811690
+          "_SAtimestamp": 1581709112987
         }
       }
     ]
   }
 }'
-      deserializeObject obj: { _SAType: 'Set', _SAvalues: [ 1, 2, '3', { createdAt: [Object] } ] }
-        deserializeObject obj: { createdAt: { _SAType: 'Date', _SAtimestamp: 1581705811690 } }
-    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-14T18:43:31.690Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-14T19:38:32.987Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -334,7 +302,6 @@ Test19 (Buffer):
     "_SAutf8String": "hello world"
   }
 }'
-      deserializeObject obj: { _SAType: 'Buffer', _SAutf8String: 'hello world' }
     deser: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
 
 Test20 (CustomObject):
@@ -351,11 +318,6 @@ Test20 (CustomObject):
     "_SAobject": {}
   }
 }'
-      deserializeObject obj: {
-  _SAType: '_SACustomObject',
-  _SAconstructorName: 'CustomObject',
-  _SAobject: {}
-}
     deser: CustomObject {}
     deser.constructor.name:  CustomObject
     deser.custom():  I am a custom Object
@@ -391,15 +353,6 @@ Test21 (CustomArray with RegExp):
     ]
   }
 }'
-      deserializeObject obj: {
-  _SAType: '_SACustomArray',
-  _SAconstructorName: 'CustomArray',
-  _SAvalues: [ 1, 2, 'foo', { key: [Array] } ]
-}
-        deserializeObject obj: {
-  key: [ 1, 2, 3, { _SAType: 'RegExp', _SAsource: 'abc', _SAflags: 'g' } ]
-}
-          deserializeObject obj: [ 1, 2, 3, { _SAType: 'RegExp', _SAsource: 'abc', _SAflags: 'g' } ]
     deser: CustomArray [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
 
 Test22 (Array containing BigInt):
@@ -416,7 +369,6 @@ Test22 (Array containing BigInt):
     }
   ]
 }'
-      deserializeObject obj: [ 1, 2, { _SAType: 'BigInt', _SAnum: '3000000000' } ]
     deser: [ 1, 2, 3000000000n ]
 
 Test23 (Object containing undefined prop):
@@ -431,7 +383,6 @@ Test23 (Object containing undefined prop):
     }
   }
 }'
-      deserializeObject obj: { foo: 'bar', notSet: { _SAType: 'undef' } }
     deser: { foo: 'bar', notSet: undefined }
 
 Test24 (undefined variable):
@@ -443,16 +394,15 @@ Test24 (undefined variable):
     "_SAType": "undef"
   }
 }'
-      deserializeObject obj: { _SAType: 'undef' }
     deser: undefined
 
 Test25 (Error):
   let src = new Error("this is a sample error");
     src:  Error: this is a sample error
     at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)
-    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:31:3
+    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:30:10)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:32:10)
     at Module._compile (internal/modules/cjs/loader.js:1139:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
     at Module.load (internal/modules/cjs/loader.js:988:32)
@@ -464,29 +414,14 @@ Test25 (Error):
   "_SA_Content": {
     "_SAType": "Error",
     "_SAmessage": "this is a sample error",
-    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)\n    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:31:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:30:10)\n    at Module._compile (internal/modules/cjs/loader.js:1139:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)\n    at Module.load (internal/modules/cjs/loader.js:988:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:896:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)\n    at internal/main/run_main_module.js:17:47"
+    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)\n    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:33:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:32:10)\n    at Module._compile (internal/modules/cjs/loader.js:1139:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)\n    at Module.load (internal/modules/cjs/loader.js:988:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:896:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)\n    at internal/main/run_main_module.js:17:47"
   }
 }'
-      deserializeObject obj: {
-  _SAType: 'Error',
-  _SAmessage: 'this is a sample error',
-  _SAstack: 'Error: this is a sample error\n' +
-    '    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)\n' +
-    '    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:31:3\n' +
-    '    at Array.forEach (<anonymous>)\n' +
-    '    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:30:10)\n' +
-    '    at Module._compile (internal/modules/cjs/loader.js:1139:30)\n' +
-    '    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)\n' +
-    '    at Module.load (internal/modules/cjs/loader.js:988:32)\n' +
-    '    at Function.Module._load (internal/modules/cjs/loader.js:896:14)\n' +
-    '    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)\n' +
-    '    at internal/main/run_main_module.js:17:47'
-}
     deser: Error: this is a sample error
     at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)
-    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:31:3
+    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:30:10)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:32:10)
     at Module._compile (internal/modules/cjs/loader.js:1139:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
     at Module.load (internal/modules/cjs/loader.js:988:32)
@@ -556,18 +491,6 @@ Test26 (demo):
     }
   }
 }'
-      deserializeObject obj: {
-  undef: { _SAType: 'undef' },
-  regexp: { _SAType: 'RegExp', _SAsource: 'abc', _SAflags: 'gi' },
-  bignum: { _SAType: 'BigInt', _SAnum: '4000000000000000000' },
-  map: { _SAType: 'Map', _SAkvPairs: [ [Array], [Array] ] },
-  custom: {
-    _SAType: '_SACustomObject',
-    _SAconstructorName: 'CustomObj',
-    _SAobject: { foo: 'bar' }
-  },
-  buffer: { _SAType: 'Buffer', _SAutf8String: 'hello world' }
-}
     deser: {
   undef: undefined,
   regexp: /abc/gi,

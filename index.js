@@ -7,6 +7,15 @@ const defaultOptions = {
   pretty: false
 };
 
+// get named object constructor, if it exists in global scope
+function namedConstructor(name) {
+  let constructor = (typeof global !== 'undefined' && global[name])
+    || (typeof window !== 'undefined' && window[name])
+    || (typeof WorkerGlobalScope !== 'undefined' && WorkerGlobalScope[name]);
+  if (typeof constructor !== 'function') { constructor = null; }
+  return constructor;
+}
+
 // recursively serialize object in-place (depth first)
 function serializeObject (obj, options, depth) {
 
@@ -804,11 +813,12 @@ Object.assign(objectBehaviors, {
     // any object with a custom constructor name
     deserialize: (srcSer, getCustomObject) => {
       const cName = srcSer._SAconstructorName;
-      const cNameDefined = eval('typeof ' + cName + ' !== "undefined"');
       const srcObj = srcSer._SAobject;
+      // const cNameDefined = eval('typeof ' + cName + ' !== "undefined"');
+      const cConstructor = namedConstructor(cName);
       let cObj;
-      if (cNameDefined) {
-        cObj = new eval(cName)();
+      if (cConstructor) {
+        cObj = new cConstructor();
       } else {
         if (!getCustomObject) {
           throw 'Error: deserialize _SACustomObject - getCustomObject missing';
@@ -826,11 +836,12 @@ Object.assign(objectBehaviors, {
     // any array with a custom constructor name
     deserialize: (srcSer, getCustomObject) => {
       const cName = srcSer._SAconstructorName;
-      const cNameDefined = eval('typeof ' + cName + ' !== "undefined"');
+      // const cNameDefined = eval('typeof ' + cName + ' !== "undefined"');
       let values = srcSer._SAvalues;
+      const cConstructor = namedConstructor(cName);
       let array;
-      if (cNameDefined) {
-        array = new eval(cName)();
+      if (cConstructor) {
+        array = new cConstructor(cName);
       } else {
         if (!getCustomObject) {
           throw 'Error: deserialize _SACustomArray - getCustomObject missing';

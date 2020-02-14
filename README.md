@@ -3,6 +3,7 @@ A universal serializer and de-serializer for JavaScript data
 ---
 ![GitHub top language](https://img.shields.io/github/languages/top/terrymorse58/serialize-anything)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/terrymorse58/serialize-anything)
+[![codebeat badge](https://codebeat.co/badges/944a5f1c-b519-43fb-85de-97b6a9326fb8)](https://codebeat.co/projects/github-com-terrymorse58-serialize-anything-master)
 ![David](https://img.shields.io/david/terrymorse58/serialize-anything)
 ![NPM Downloads](https://img.shields.io/npm/dw/serialize-anything)
 ![NPM License](https://img.shields.io/npm/l/serialize-anything)
