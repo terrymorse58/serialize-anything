@@ -37,7 +37,7 @@
     "gulp": "^4.0.2",
     "gulp-minify": "^3.1.0",
     "gulp-rename": "^2.0.0",
-    "serialize-javascript": "^2.1.2",
+    "serialize-javascript": "^3.1.0",
     "serialize-to-js": "^3.1.1"
   }
 }
