@@ -1,6 +1,6 @@
 // serialize-all - serialize and de-serialize all JavaScript data types
 
-const deepCopy = require('deep-copy-all');
+const deepCopy = require('./node_modules/deep-copy-all/index.js');
 
 const defaultOptions = {
   maxDepth: 20,
@@ -30,7 +30,7 @@ function serializeObject (obj, options, depth) {
 
   const objType = objectType(obj);
 
-  // console.log(str + `serializeObject enter ${objType}`);
+  //console.log(str + `serializeObject enter ${objType}`);
 
   const objBehaviors = objectBehaviors[objType];
   const objSerialize = objBehaviors.serialize;
@@ -79,6 +79,7 @@ function serializeObject (obj, options, depth) {
  * @return {string}
  */
 function serialize (item, options = undefined) {
+  // console.log('serialize() item:', item);
   options = options || defaultOptions;
   if (typeof options.maxDepth === 'undefined') {
     options.maxDepth = defaultOptions.maxDepth;
@@ -89,7 +90,7 @@ function serialize (item, options = undefined) {
 
   let iCopy = deepCopy(item);
 
-  // console.log('serialize deepCopy result:',iCopy);
+  // console.log('serialize deepCopy iCopy:',iCopy);
 
   iCopy = serializeObject(iCopy, options, 0);
 

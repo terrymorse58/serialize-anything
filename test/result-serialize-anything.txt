@@ -1,15 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2020-02-14T19:38:32.976Z
+    src:   2021-02-15T19:46:59.232Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1581709112976
+    "_SAtimestamp": 1613418419232
   }
 }'
-    deser: Date: Fri Feb 14 2020 11:38:32 GMT-0800 (Pacific Standard Time)
+    deser: Date: Mon Feb 15 2021 11:46:59 GMT-0800 (Pacific Standard Time)
 
 Test2 (Map):
   let src = new Map();
@@ -19,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-14T19:38:32.979Z
+  { foo: 'bar' } => 2021-02-15T19:46:59.235Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -36,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1581709112979
+          "_SAtimestamp": 1613418419235
         }
       ]
     ]
@@ -44,7 +44,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2020-02-14T19:38:32.979Z
+  { foo: 'bar' } => 2021-02-15T19:46:59.235Z
 }
 
 Test3 (Function):
@@ -79,7 +79,7 @@ Test4: (RegExp)
 
 Test5 (Int8Array):
   let src = Int8Array.from([3, 4, 42]);
-    src:   Int8Array [ 3, 4, 42 ]
+    src:   Int8Array(3) [ 3, 4, 42 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -91,11 +91,11 @@ Test5 (Int8Array):
     ]
   }
 }'
-    deser: Int8Array [ 3, 4, 42 ]
+    deser: Int8Array(3) [ 3, 4, 42 ]
 
 Test6 (Uint8Array):
   let src = Uint8Array.from([3, 128, 64]);
-    src:   Uint8Array [ 3, 128, 64 ]
+    src:   Uint8Array(3) [ 3, 128, 64 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -107,11 +107,11 @@ Test6 (Uint8Array):
     ]
   }
 }'
-    deser: Uint8Array [ 3, 128, 64 ]
+    deser: Uint8Array(3) [ 3, 128, 64 ]
 
 Test7 (Int16Array):
   let src = Int16Array.from([32, 128, 64]);
-    src:   Int16Array [ 32, 128, 64 ]
+    src:   Int16Array(3) [ 32, 128, 64 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -123,11 +123,11 @@ Test7 (Int16Array):
     ]
   }
 }'
-    deser: Int16Array [ 32, 128, 64 ]
+    deser: Int16Array(3) [ 32, 128, 64 ]
 
 Test8 (Uint16Array):
   let src = Uint16Array.from([32, 128, 64]);
-    src:   Uint16Array [ 32, 128, 64 ]
+    src:   Uint16Array(3) [ 32, 128, 64 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -139,11 +139,11 @@ Test8 (Uint16Array):
     ]
   }
 }'
-    deser: Uint16Array [ 32, 128, 64 ]
+    deser: Uint16Array(3) [ 32, 128, 64 ]
 
 Test9 (Int32Array):
   let src = Int32Array.from([32, 128, 64]);
-    src:   Int32Array [ 32, 128, 64 ]
+    src:   Int32Array(3) [ 32, 128, 64 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -155,11 +155,11 @@ Test9 (Int32Array):
     ]
   }
 }'
-    deser: Int32Array [ 32, 128, 64 ]
+    deser: Int32Array(3) [ 32, 128, 64 ]
 
 Test10 (Uint32Array):
   let src = Uint32Array.from([32, 128, 64]);
-    src:   Uint32Array [ 32, 128, 64 ]
+    src:   Uint32Array(3) [ 32, 128, 64 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -171,11 +171,11 @@ Test10 (Uint32Array):
     ]
   }
 }'
-    deser: Uint32Array [ 32, 128, 64 ]
+    deser: Uint32Array(3) [ 32, 128, 64 ]
 
 Test11 (Float32Array):
   let src = Float32Array.from([32, 128, 64]);
-    src:   Float32Array [ 32, 128, 64 ]
+    src:   Float32Array(3) [ 32, 128, 64 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -187,11 +187,11 @@ Test11 (Float32Array):
     ]
   }
 }'
-    deser: Float32Array [ 32, 128, 64 ]
+    deser: Float32Array(3) [ 32, 128, 64 ]
 
 Test12 (Float64Array):
   let src = Float64Array.from([32, 128, 64]);
-    src:   Float64Array [ 32, 128, 64 ]
+    src:   Float64Array(3) [ 32, 128, 64 ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -203,11 +203,11 @@ Test12 (Float64Array):
     ]
   }
 }'
-    deser: Float64Array [ 32, 128, 64 ]
+    deser: Float64Array(3) [ 32, 128, 64 ]
 
 Test13 (BigInt64Array):
   let src = BigInt64Array.from([32, 128, 64]);
-    src:   BigInt64Array [ 3n, 4n, 42n ]
+    src:   BigInt64Array(3) [ 3n, 4n, 42n ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -219,11 +219,11 @@ Test13 (BigInt64Array):
     ]
   }
 }'
-    deser: BigInt64Array [ 3n, 4n, 42n ]
+    deser: BigInt64Array(3) [ 3n, 4n, 42n ]
 
 Test14 (BigUint64Array):
   let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
-    src:   BigUint64Array [ 3000000000000000000n, 4n, 42n ]
+    src:   BigUint64Array(3) [ 3000000000000000000n, 4n, 42n ]
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -235,7 +235,7 @@ Test14 (BigUint64Array):
     ]
   }
 }'
-    deser: BigUint64Array [ 3000000000000000000n, 4n, 42n ]
+    deser: BigUint64Array(3) [ 3000000000000000000n, 4n, 42n ]
 
 Test15 (ArrayBuffer):
   let aBuf = new ArrayBuffer(8);
@@ -258,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2020-02-14T19:38:32.987Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2021-02-15T19:46:59.245Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -270,13 +270,13 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1581709112987
+          "_SAtimestamp": 1613418419245
         }
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2020-02-14T19:38:32.987Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2021-02-15T19:46:59.245Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -327,7 +327,7 @@ Test21 (CustomArray with RegExp):
     custom () {return "I am a custom Array";}
   }
   let src = CustomArray.from([1,2,"foo",{key: [1,2,3, /abc/g]}]);
-    src:  CustomArray [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+    src:  CustomArray(4) [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
     src.custom():  I am a custom Array
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -353,7 +353,7 @@ Test21 (CustomArray with RegExp):
     ]
   }
 }'
-    deser: CustomArray [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+    deser: CustomArray(4) [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
 
 Test22 (Array containing BigInt):
   let src = [1, 2, 3000000000n];
@@ -399,34 +399,34 @@ Test24 (undefined variable):
 Test25 (Error):
   let src = new Error("this is a sample error");
     src:  Error: this is a sample error
-    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)
-    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:33:3
+    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:32:10)
-    at Module._compile (internal/modules/cjs/loader.js:1139:30)
-    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
-    at Module.load (internal/modules/cjs/loader.js:988:32)
-    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
-    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:32:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
     at internal/main/run_main_module.js:17:47
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Error",
     "_SAmessage": "this is a sample error",
-    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)\n    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:33:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:32:10)\n    at Module._compile (internal/modules/cjs/loader.js:1139:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)\n    at Module.load (internal/modules/cjs/loader.js:988:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:896:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)\n    at internal/main/run_main_module.js:17:47"
+    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)\n    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:33:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:32:10)\n    at Module._compile (internal/modules/cjs/loader.js:1076:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)\n    at Module.load (internal/modules/cjs/loader.js:941:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:782:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)\n    at internal/main/run_main_module.js:17:47"
   }
 }'
     deser: Error: this is a sample error
-    at test25 (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-suite.js:623:13)
-    at /Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:33:3
+    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/serialize-anything/test/test-serialize-anything.js:32:10)
-    at Module._compile (internal/modules/cjs/loader.js:1139:30)
-    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
-    at Module.load (internal/modules/cjs/loader.js:988:32)
-    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
-    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:32:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
     at internal/main/run_main_module.js:17:47
 
 Test26 (demo):
