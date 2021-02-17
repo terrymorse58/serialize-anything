@@ -674,6 +674,32 @@ function test26 (serialize, deserialize, options) {
 }
 tests.push(test26);
 
+// circular object
+function test27(serialize, deserialize, options) {
+  console.log(`\nTest27 (circular object reference):`);
+  console.log(
+    '  const src = { foo: "Foo", bar: {bar: "Bar"}};\n' +
+    '  src.bar.baz = src;'
+  );
+  try {
+    const src = {foo: "Foo", bar: {bar: "Bar"}};
+    src.bar.baz = src;
+    console.log('    src: ', src);
+    let ser = serialize(src, options);
+    console.log('    ser:', ser);
+    const deser = deserialize(ser);
+    console.log('    deser:', deser);
+    console.log('\n  deser.foo = "FOO_FOO";');
+    deser.foo = "FOO_FOO";
+    console.log('    deser:', deser);
+  } catch (err) {
+    console.log('*** TEST FAILED:', err);
+    errors.push('Test27 ' + err.toString());
+  }
+}
+tests.push(test27);
+
+
 
 module.exports = {
   tests: tests,

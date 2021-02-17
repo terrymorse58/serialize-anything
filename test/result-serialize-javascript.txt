@@ -1,0 +1,296 @@
+
+Test1 (Date):
+  const src = new Date();
+    src:   2021-02-17T17:56:11.390Z
+    ser:  'new Date("2021-02-17T17:56:11.390Z")'
+    deser: Date: Wed Feb 17 2021 09:56:11 GMT-0800 (Pacific Standard Time)
+
+Test2 (Map):
+  let src = new Map();
+  let key1 = "key1";
+  let key2 = {foo: "bar"};
+  src.set(key1, "key1 value");
+  src.set(key2, new Date());
+    src:   Map(2) {
+  'key1' => 'key1 value',
+  { foo: 'bar' } => 2021-02-17T17:56:11.394Z
+}
+    ser:  'new Map([["key1","key1 value"],[{"foo":"bar"},new Date("2021-02-17T17:56:11.394Z")]])'
+    deser: Map(2) {
+  'key1' => 'key1 value',
+  { foo: 'bar' } => 2021-02-17T17:56:11.394Z
+}
+
+Test3 (Function):
+  let src = function foo (x) { return x + 1;};
+    src:   [Function: foo]
+    src.toString:      function foo (x) { return x + 1;}
+    ser:  'function foo (x) { return x + 1;}'
+    deser: [Function: foo]
+
+Test4: (RegExp)
+  let src = [1,2,/abc/i];
+    src:  [ 1, 2, /abc/i ]
+    ser:  '[1,2,new RegExp("abc", "i")]'
+    deser: [ 1, 2, /abc/i ]
+
+Test5 (Int8Array):
+  let src = Int8Array.from([3, 4, 42]);
+    src:   Int8Array(3) [ 3, 4, 42 ]
+    ser:  '{"0":3,"1":4,"2":42}'
+    deser: { '0': 3, '1': 4, '2': 42 }
+
+Test6 (Uint8Array):
+  let src = Uint8Array.from([3, 128, 64]);
+    src:   Uint8Array(3) [ 3, 128, 64 ]
+    ser:  '{"0":3,"1":128,"2":64}'
+    deser: { '0': 3, '1': 128, '2': 64 }
+
+Test7 (Int16Array):
+  let src = Int16Array.from([32, 128, 64]);
+    src:   Int16Array(3) [ 32, 128, 64 ]
+    ser:  '{"0":32,"1":128,"2":64}'
+    deser: { '0': 32, '1': 128, '2': 64 }
+
+Test8 (Uint16Array):
+  let src = Uint16Array.from([32, 128, 64]);
+    src:   Uint16Array(3) [ 32, 128, 64 ]
+    ser:  '{"0":32,"1":128,"2":64}'
+    deser: { '0': 32, '1': 128, '2': 64 }
+
+Test9 (Int32Array):
+  let src = Int32Array.from([32, 128, 64]);
+    src:   Int32Array(3) [ 32, 128, 64 ]
+    ser:  '{"0":32,"1":128,"2":64}'
+    deser: { '0': 32, '1': 128, '2': 64 }
+
+Test10 (Uint32Array):
+  let src = Uint32Array.from([32, 128, 64]);
+    src:   Uint32Array(3) [ 32, 128, 64 ]
+    ser:  '{"0":32,"1":128,"2":64}'
+    deser: { '0': 32, '1': 128, '2': 64 }
+
+Test11 (Float32Array):
+  let src = Float32Array.from([32, 128, 64]);
+    src:   Float32Array(3) [ 32, 128, 64 ]
+    ser:  '{"0":32,"1":128,"2":64}'
+    deser: { '0': 32, '1': 128, '2': 64 }
+
+Test12 (Float64Array):
+  let src = Float64Array.from([32, 128, 64]);
+    src:   Float64Array(3) [ 32, 128, 64 ]
+    ser:  '{"0":32,"1":128,"2":64}'
+    deser: { '0': 32, '1': 128, '2': 64 }
+
+Test13 (BigInt64Array):
+  let src = BigInt64Array.from([32, 128, 64]);
+    src:   BigInt64Array(3) [ 3n, 4n, 42n ]
+*** TEST FAILED: TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at serialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-javascript/index.js:179:20)
+    at test13 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:318:17)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+
+Test14 (BigUint64Array):
+  let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
+    src:   BigUint64Array(3) [ 3000000000000000000n, 4n, 42n ]
+*** TEST FAILED: TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at serialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-javascript/index.js:179:20)
+    at test14 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:343:17)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+
+Test15 (ArrayBuffer):
+  let aBuf = new ArrayBuffer(8);
+  let src = new Uint8Array(aBuf);
+  let data = [1, 2, 3, 4, 5, 127];
+    data:  [ 1, 2, 3, 4, 5, 127 ]
+    src:   ArrayBuffer {
+  [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
+  byteLength: 8
+}
+    aBuf:  ArrayBuffer {
+  [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
+  byteLength: 8
+}
+    ser:  '{}'
+    deser:  {}
+
+Test16 (Set):
+  let src = new Set([1,2,"3",{createdAt: new Date()}]);
+    src:  Set(4) { 1, 2, '3', { createdAt: 2021-02-17T17:56:11.404Z } }
+    ser:  'new Set([1,2,"3",{"createdAt":new Date("2021-02-17T17:56:11.404Z")}])'
+    deser: Set(4) { 1, 2, '3', { createdAt: 2021-02-17T17:56:11.404Z } }
+
+Test17 (WeakSet):
+  let src = new WeakSet();
+  let obj = {value: "in the set"}
+  src.add(obj);
+    src:  WeakSet { <items unknown> }
+    ser:  '{}'
+    deser: {}
+
+Test18 (WeakMap):
+  let src = new WeakMap();
+  let obj = { foo: "I am foo" };
+  src.set(obj, 42);
+    src:  WeakMap { <items unknown> }
+    ser:  '{}'
+    deser: {}
+
+Test19 (Buffer):
+  let src = Buffer.from("hello world");
+    src:  <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+    ser:  '{"type":"Buffer","data":[104,101,108,108,111,32,119,111,114,108,100]}'
+    deser: {
+  type: 'Buffer',
+  data: [
+    104, 101, 108, 108,
+    111,  32, 119, 111,
+    114, 108, 100
+  ]
+}
+
+Test20 (CustomObject):
+  class CustomObject extends Object {
+    custom () {return "I am a custom Object";}
+  }
+  let src = new CustomObject();
+    src:  CustomObject {}
+    ser:  '{}'
+    deser: {}
+    deser.constructor.name:  Object
+*** TEST FAILED: Error did not maintain CustomObject type
+
+Test21 (CustomArray with RegExp):
+  class CustomArray extends Array {
+    custom () {return "I am a custom Array";}
+  }
+  let src = CustomArray.from([1,2,"foo",{key: [1,2,3, /abc/g]}]);
+    src:  CustomArray(4) [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+    src.custom():  I am a custom Array
+    ser:  '[1,2,"foo",{"key":[1,2,3,new RegExp("abc", "g")]}]'
+    deser: [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+*** TEST FAILED: Error did not maintain CustomArray type
+
+Test22 (Array containing BigInt):
+  let src = [1, 2, 3000000000n];
+    src:  [ 1, 2, 3000000000n ]
+*** TEST FAILED: TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at serialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-javascript/index.js:179:20)
+    at test22 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:565:17)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+
+Test23 (Object containing undefined prop):
+  let src = {foo: "bar", notSet: undefined};
+    src:  { foo: 'bar', notSet: undefined }
+    ser:  '{"foo":"bar","notSet":undefined}'
+    deser: { foo: 'bar', notSet: undefined }
+
+Test24 (undefined variable):
+  let src = undefined;
+    src:  undefined
+    ser:  'undefined'
+    deser: undefined
+
+Test25 (Error):
+  let src = new Error("this is a sample error");
+    src:  Error: this is a sample error
+    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
+    at internal/main/run_main_module.js:17:47
+    ser:  '{}'
+    deser: {}
+
+Test26 (demo):
+  class CustomObj extends Object {}
+    const custom = new CustomObj();
+    Object.assign(custom,{foo:"bar"});
+    let src = {
+      map: new Map([
+        [1, 'one'],
+        [2, 'two'],
+        [3, 'three'],
+      ]),
+      custom
+    };
+
+    src:  {
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000n,
+  map: Map(2) { 1 => 'one', 2 => 'two' },
+  custom: CustomObj { foo: 'bar' },
+  buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+}
+*** TEST FAILED: TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at serialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-javascript/index.js:179:20)
+    at test26 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:666:15)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+
+Test27 (circular object reference):
+  const src = { foo: "Foo", bar: {bar: "Bar"}};
+  src.bar.baz = src;
+    src:  <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
+*** TEST FAILED: TypeError: Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    |     property 'bar' -> object with constructor 'Object'
+    --- property 'baz' closes the circle
+    at JSON.stringify (<anonymous>)
+    at serialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-javascript/index.js:179:20)
+    at test27 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:688:15)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-javascript.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+
+End of test.
+
+Errors:  [
+  'Test13 TypeError: Do not know how to serialize a BigInt',
+  'Test14 TypeError: Do not know how to serialize a BigInt',
+  'Test20 Error did not maintain CustomObject type',
+  'Test21 Error did not maintain CustomArray type',
+  'Test22 TypeError: Do not know how to serialize a BigInt',
+  'Test26 TypeError: Do not know how to serialize a BigInt',
+  'Test27 TypeError: Converting circular structure to JSON\n' +
+    "    --> starting at object with constructor 'Object'\n" +
+    "    |     property 'bar' -> object with constructor 'Object'\n" +
+    "    --- property 'baz' closes the circle"
+]

@@ -1,0 +1,267 @@
+
+Test1 (Date):
+  const src = new Date();
+    src:   2021-02-17T17:55:07.327Z
+    ser:  'new Date("2021-02-17T17:55:07.327Z")'
+    deser: Date: Wed Feb 17 2021 09:55:07 GMT-0800 (Pacific Standard Time)
+
+Test2 (Map):
+  let src = new Map();
+  let key1 = "key1";
+  let key2 = {foo: "bar"};
+  src.set(key1, "key1 value");
+  src.set(key2, new Date());
+    src:   Map(2) {
+  'key1' => 'key1 value',
+  { foo: 'bar' } => 2021-02-17T17:55:07.331Z
+}
+    ser:  'new Map([["key1", "key1 value"], [{foo: "bar"}, new Date("2021-02-17T17:55:07.331Z")]])'
+    deser: Map(2) {
+  'key1' => 'key1 value',
+  { foo: 'bar' } => 2021-02-17T17:55:07.331Z
+}
+
+Test3 (Function):
+  let src = function foo (x) { return x + 1;};
+    src:   [Function: foo]
+    src.toString:      function foo (x) { return x + 1;}
+    ser:  'function foo (x) { return x + 1;}'
+    deser: [Function: foo]
+
+Test4: (RegExp)
+  let src = [1,2,/abc/i];
+    src:  [ 1, 2, /abc/i ]
+    ser:  '[1, 2, new RegExp("abc", "i")]'
+    deser: [ 1, 2, /abc/i ]
+
+Test5 (Int8Array):
+  let src = Int8Array.from([3, 4, 42]);
+    src:   Int8Array(3) [ 3, 4, 42 ]
+    ser:  'new Int8Array([3, 4, 42])'
+    deser: Int8Array(3) [ 3, 4, 42 ]
+
+Test6 (Uint8Array):
+  let src = Uint8Array.from([3, 128, 64]);
+    src:   Uint8Array(3) [ 3, 128, 64 ]
+    ser:  'new Uint8Array([3, 128, 64])'
+    deser: Uint8Array(3) [ 3, 128, 64 ]
+
+Test7 (Int16Array):
+  let src = Int16Array.from([32, 128, 64]);
+    src:   Int16Array(3) [ 32, 128, 64 ]
+    ser:  'new Int16Array([32, 128, 64])'
+    deser: Int16Array(3) [ 32, 128, 64 ]
+
+Test8 (Uint16Array):
+  let src = Uint16Array.from([32, 128, 64]);
+    src:   Uint16Array(3) [ 32, 128, 64 ]
+    ser:  'new Uint16Array([32, 128, 64])'
+    deser: Uint16Array(3) [ 32, 128, 64 ]
+
+Test9 (Int32Array):
+  let src = Int32Array.from([32, 128, 64]);
+    src:   Int32Array(3) [ 32, 128, 64 ]
+    ser:  'new Int32Array([32, 128, 64])'
+    deser: Int32Array(3) [ 32, 128, 64 ]
+
+Test10 (Uint32Array):
+  let src = Uint32Array.from([32, 128, 64]);
+    src:   Uint32Array(3) [ 32, 128, 64 ]
+    ser:  'new Uint32Array([32, 128, 64])'
+    deser: Uint32Array(3) [ 32, 128, 64 ]
+
+Test11 (Float32Array):
+  let src = Float32Array.from([32, 128, 64]);
+    src:   Float32Array(3) [ 32, 128, 64 ]
+    ser:  'new Float32Array([32, 128, 64])'
+    deser: Float32Array(3) [ 32, 128, 64 ]
+
+Test12 (Float64Array):
+  let src = Float64Array.from([32, 128, 64]);
+    src:   Float64Array(3) [ 32, 128, 64 ]
+    ser:  'new Float64Array([32, 128, 64])'
+    deser: Float64Array(3) [ 32, 128, 64 ]
+
+Test13 (BigInt64Array):
+  let src = BigInt64Array.from([32, 128, 64]);
+    src:   BigInt64Array(3) [ 3n, 4n, 42n ]
+    ser:  '3,4,42'
+    deser: 42
+*** TEST FAILED: Error did not maintain BigInt64Array type
+
+Test14 (BigUint64Array):
+  let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
+    src:   BigUint64Array(3) [ 3000000000000000000n, 4n, 42n ]
+    ser:  '3000000000000000000,4,42'
+    deser: 42
+*** TEST FAILED: Error did not maintain BigUint64Array type
+
+Test15 (ArrayBuffer):
+  let aBuf = new ArrayBuffer(8);
+  let src = new Uint8Array(aBuf);
+  let data = [1, 2, 3, 4, 5, 127];
+    data:  [ 1, 2, 3, 4, 5, 127 ]
+    src:   ArrayBuffer {
+  [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
+  byteLength: 8
+}
+    aBuf:  ArrayBuffer {
+  [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
+  byteLength: 8
+}
+    ser:  '[object ArrayBuffer]'
+*** TEST FAILED: Error could not eval '([object ArrayBuffer])'
+
+Test16 (Set):
+  let src = new Set([1,2,"3",{createdAt: new Date()}]);
+    src:  Set(4) { 1, 2, '3', { createdAt: 2021-02-17T17:55:07.348Z } }
+    ser:  'new Set([1, 2, "3", {createdAt: new Date("2021-02-17T17:55:07.348Z")}])'
+    deser: Set(4) { 1, 2, '3', { createdAt: 2021-02-17T17:55:07.348Z } }
+
+Test17 (WeakSet):
+  let src = new WeakSet();
+  let obj = {value: "in the set"}
+  src.add(obj);
+    src:  WeakSet { <items unknown> }
+    ser:  '[object WeakSet]'
+*** TEST FAILED: Error could not eval '([object WeakSet])'
+
+Test18 (WeakMap):
+  let src = new WeakMap();
+  let obj = { foo: "I am foo" };
+  src.set(obj, 42);
+    src:  WeakMap { <items unknown> }
+    ser:  '[object WeakMap]'
+*** TEST FAILED: Error could not eval '([object WeakMap])'
+
+Test19 (Buffer):
+  let src = Buffer.from("hello world");
+    src:  <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+    ser:  'Buffer.from("aGVsbG8gd29ybGQ=", "base64")'
+    deser: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+
+Test20 (CustomObject):
+  class CustomObject extends Object {
+    custom () {return "I am a custom Object";}
+  }
+  let src = new CustomObject();
+    src:  CustomObject {}
+    ser:  '{}'
+    deser: {}
+    deser.constructor.name:  Object
+*** TEST FAILED: Error did not maintain CustomObject type
+
+Test21 (CustomArray with RegExp):
+  class CustomArray extends Array {
+    custom () {return "I am a custom Array";}
+  }
+  let src = CustomArray.from([1,2,"foo",{key: [1,2,3, /abc/g]}]);
+    src:  CustomArray(4) [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+    src.custom():  I am a custom Array
+    ser:  '[1, 2, "foo", {key: [1, 2, 3, new RegExp("abc", "g")]}]'
+    deser: [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
+*** TEST FAILED: Error did not maintain CustomArray type
+
+Test22 (Array containing BigInt):
+  let src = [1, 2, 3000000000n];
+    src:  [ 1, 2, 3000000000n ]
+    ser:  '[1, 2, 3000000000]'
+    deser: [ 1, 2, 3000000000 ]
+
+Test23 (Object containing undefined prop):
+  let src = {foo: "bar", notSet: undefined};
+    src:  { foo: 'bar', notSet: undefined }
+    ser:  '{foo: "bar", notSet: undefined}'
+    deser: { foo: 'bar', notSet: undefined }
+
+Test24 (undefined variable):
+  let src = undefined;
+    src:  undefined
+    ser:  'undefined'
+    deser: undefined
+
+Test25 (Error):
+  let src = new Error("this is a sample error");
+    src:  Error: this is a sample error
+    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
+    at internal/main/run_main_module.js:17:47
+    ser:  'new Error("this is a sample error")'
+    deser: Error: this is a sample error
+    at eval (eval at deserialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:20:12), <anonymous>:1:2)
+    at deserialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:20:12)
+    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:628:17)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+
+Test26 (demo):
+  class CustomObj extends Object {}
+    const custom = new CustomObj();
+    Object.assign(custom,{foo:"bar"});
+    let src = {
+      map: new Map([
+        [1, 'one'],
+        [2, 'two'],
+        [3, 'three'],
+      ]),
+      custom
+    };
+
+    src:  {
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000n,
+  map: Map(2) { 1 => 'one', 2 => 'two' },
+  custom: CustomObj { foo: 'bar' },
+  buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+}
+    ser:  '{undef: undefined, regexp: new RegExp("abc", "gi"), bignum: 4000000000000000000, map: new Map([[1, "one"], [2, "two"]]), custom: {foo: "bar"}, buffer: Buffer.from("aGVsbG8gd29ybGQ=", "base64")}'
+    deser: {
+  undef: undefined,
+  regexp: /abc/gi,
+  bignum: 4000000000000000000,
+  map: Map(2) { 1 => 'one', 2 => 'two' },
+  custom: { foo: 'bar' },
+  buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+}
+
+Test27 (circular object reference):
+  const src = { foo: "Foo", bar: {bar: "Bar"}};
+  src.bar.baz = src;
+    src:  <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
+*** TEST FAILED: Error: can not convert circular structures.
+    at stringify (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-to-js/lib/index.js:87:15)
+    at stringify (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-to-js/lib/index.js:195:60)
+    at stringify (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-to-js/lib/index.js:195:60)
+    at serialize (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/node_modules/serialize-to-js/lib/index.js:209:10)
+    at test27 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:688:15)
+    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:28:3
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-to-js.js:27:10)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+
+End of test.
+
+Errors:  [
+  'Test13 Error did not maintain BigInt64Array type',
+  'Test14 Error did not maintain BigUint64Array type',
+  "Test15 Error could not eval '([object ArrayBuffer])'",
+  "Test17 Error could not eval '([object WeakSet])'",
+  "Test18 Error could not eval '([object WeakMap])'",
+  'Test20 Error did not maintain CustomObject type',
+  'Test21 Error did not maintain CustomArray type',
+  'Test27 Error: can not convert circular structures.'
+]
