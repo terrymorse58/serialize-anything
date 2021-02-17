@@ -1,6 +1,6 @@
 // serialize-all - serialize and de-serialize all JavaScript data types
 
-const deepCopy = require('./node_modules/deep-copy-all/index.js');
+const deepCopy = require('deep-copy-all');
 
 const defaultOptions = {
   maxDepth: 20,
