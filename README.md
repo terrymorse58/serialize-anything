@@ -17,9 +17,6 @@ Compared to commonly used serialize/deserialze methods which convert only a subs
 #### Exceptions
 1. There are two JavaScript types that **serialize-anything** does not support: *WeakMap* and *WeakSet*. Since there is no known way to enumerate their values, they can't be serialized.
 
-
-2. Circular object references are not supported at this time.
-
 ---
 ## Data Types Supported
 Comparing support for data types in the most popular methods.
@@ -46,7 +43,7 @@ Function               | ❌     | ✅           | ❌      | ✅
 ArrayBuffer            | 🗑     | ✅           | ❌      | ✅
 WeakSet                | 🗑     | 🗑           | ❌      | ❌
 WeakMap                | 🗑     | 🗑           | ❌      | ❌
-Circular reference     | ❌     | ❌           | ❌      | ❌
+Circular reference     | ❌     | ❌           | ❌      | ✅
 
 &nbsp; &nbsp; &nbsp; JSON.* — JSON.stringify/parse<br>
 &nbsp; &nbsp; &nbsp; s-javascript — [serialize-javascript](https://github.com/yahoo/serialize-javascript) <br>
@@ -104,6 +101,7 @@ Serialize some challenging data:
 ```javascript
 const custom = new CustomObj();
 custom.foo = 'bar';
+custom.baz = custom; // circular reference
 let source = {
   undef: undefined,
   regexp: /abc/gi,
@@ -147,8 +145,9 @@ Serialized result (JSON):
     },
     "custom": {
       "_SAType": "_SACustomObject",
+      "_SAId": "1",
       "_SAconstructorName": "CustomObj",
-      "_SAobject": { "foo": "bar" }
+      "_SAobject": { "foo": "bar", "baz": { "_SAType": "_SACustomObjectRef", "_SAId": 1 } }
     },
     "buffer": {
       "_SAType": "Buffer",
@@ -167,7 +166,7 @@ const deser = SerAny.deserialize(ser);
   regexp: /abc/gi,
   bignum: 4000000000000000000n,
   map: Map(2) { 1 => 'one', 2 => 'two' },
-  custom: CustomObj { foo: 'bar' },
+  custom: CustomObj { foo: 'bar', baz: Object [CustomObj] },  
   buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
 }
 */
