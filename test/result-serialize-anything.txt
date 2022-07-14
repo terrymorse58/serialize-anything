@@ -1,15 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2021-02-17T17:50:30.203Z
+    src:   2022-07-14T04:51:53.959Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1613584230203
+    "_SAtimestamp": 1657774313959
   }
 }'
-    deser: Date: Wed Feb 17 2021 09:50:30 GMT-0800 (Pacific Standard Time)
+    deser: Date: Wed Jul 13 2022 21:51:53 GMT-0700 (Pacific Daylight Time)
 
 Test2 (Map):
   let src = new Map();
@@ -19,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2021-02-17T17:50:30.207Z
+  { foo: 'bar' } => 2022-07-14T04:51:53.967Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -36,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1613584230207
+          "_SAtimestamp": 1657774313967
         }
       ]
     ]
@@ -44,7 +44,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2021-02-17T17:50:30.207Z
+  { foo: 'bar' } => 2022-07-14T04:51:53.967Z
 }
 
 Test3 (Function):
@@ -258,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2021-02-17T17:50:30.217Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2022-07-14T04:51:53.977Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -270,13 +270,14 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1613584230217
-        }
+          "_SAtimestamp": 1657774313977
+        },
+        "_SAId": 2
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2021-02-17T17:50:30.217Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2022-07-14T04:51:53.977Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -315,7 +316,9 @@ Test20 (CustomObject):
   "_SA_Content": {
     "_SAType": "_SACustomObject",
     "_SAconstructorName": "CustomObject",
-    "_SAobject": {}
+    "_SAobject": {
+      "_SAId": 1
+    }
   }
 }'
     deser: CustomObject {}
@@ -348,7 +351,8 @@ Test21 (CustomArray with RegExp):
             "_SAsource": "abc",
             "_SAflags": "g"
           }
-        ]
+        ],
+        "_SAId": 2
       }
     ]
   }
@@ -380,7 +384,8 @@ Test23 (Object containing undefined prop):
     "foo": "bar",
     "notSet": {
       "_SAType": "undef"
-    }
+    },
+    "_SAId": 1
   }
 }'
     deser: { foo: 'bar', notSet: undefined }
@@ -399,35 +404,35 @@ Test24 (undefined variable):
 Test25 (Error):
   let src = new Error("this is a sample error");
     src:  Error: this is a sample error
-    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)
-    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:33:3
+    at test25 (/Users/jric/dev/patches/serialize-anything-circular/test/test-suite.js:623:13)
+    at /Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:32:10)
-    at Module._compile (internal/modules/cjs/loader.js:1076:30)
-    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
-    at Module.load (internal/modules/cjs/loader.js:941:32)
-    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
-    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
-    at internal/main/run_main_module.js:17:47
+    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:32:10)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Module._load (node:internal/modules/cjs/loader:827:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Error",
     "_SAmessage": "this is a sample error",
-    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)\n    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:33:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:32:10)\n    at Module._compile (internal/modules/cjs/loader.js:1076:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)\n    at Module.load (internal/modules/cjs/loader.js:941:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:782:14)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)\n    at internal/main/run_main_module.js:17:47"
+    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/jric/dev/patches/serialize-anything-circular/test/test-suite.js:623:13)\n    at /Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:33:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:32:10)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Module._load (node:internal/modules/cjs/loader:827:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47"
   }
 }'
     deser: Error: this is a sample error
-    at test25 (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-suite.js:623:13)
-    at /Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:33:3
+    at test25 (/Users/jric/dev/patches/serialize-anything-circular/test/test-suite.js:623:13)
+    at /Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Serialize_Anything/serialize-anything/test/test-serialize-anything.js:32:10)
-    at Module._compile (internal/modules/cjs/loader.js:1076:30)
-    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
-    at Module.load (internal/modules/cjs/loader.js:941:32)
-    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
-    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
-    at internal/main/run_main_module.js:17:47
+    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:32:10)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Module._load (node:internal/modules/cjs/loader:827:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47
 
 Test26 (demo):
   class CustomObj extends Object {}
@@ -482,13 +487,15 @@ Test26 (demo):
       "_SAType": "_SACustomObject",
       "_SAconstructorName": "CustomObj",
       "_SAobject": {
-        "foo": "bar"
+        "foo": "bar",
+        "_SAId": 3
       }
     },
     "buffer": {
       "_SAType": "Buffer",
       "_SAutf8String": "hello world"
-    }
+    },
+    "_SAId": 1
   }
 }'
     deser: {
@@ -504,12 +511,29 @@ Test27 (circular object reference):
   const src = { foo: "Foo", bar: {bar: "Bar"}};
   src.bar.baz = src;
     src:  <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
-*** TEST FAILED: Error maximum depth exceeded - possible circular reference
+    ser: {
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "foo": "Foo",
+    "bar": {
+      "bar": "Bar",
+      "baz": {
+        "_SAType": "_SAObjectRef",
+        "_SAId": 1
+      },
+      "_SAId": 2
+    },
+    "_SAId": 1
+  }
+}
+    deser: <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
+
+  deser.foo = "FOO_FOO";
+    deser: <ref *1> { foo: 'FOO_FOO', bar: { bar: 'Bar', baz: [Circular *1] } }
 
 End of test.
 
 Errors:  [
   'Test17 Error: serialize WeakSet not supported',
-  'Test18 Error: serialize WeakMap not supported',
-  'Test27 Error maximum depth exceeded - possible circular reference'
+  'Test18 Error: serialize WeakMap not supported'
 ]
