@@ -142,8 +142,8 @@ Serialized result (JSON):
     },
     "map": {
       "_SAType": "Map",
-      "_SAkvPairs": [ [1, "one"], [2,"two"] ],
-      "_SAId": 2
+      "_SAId": 2,
+      "_SAkvPairs": [ [1, "one"], [2,"two"] ]
     },
     "custom": {
       "_SAType": "_SACustomObject",
