@@ -117,7 +117,7 @@ let source = {
   regexp: /abc/gi,
   bignum: 4000000000000000000n,
   map: Map(2) { 1 => 'one', 2 => 'two' },
-  custom: CustomObj { foo: 'bar' },
+  custom: CustomObj <ref *1> { foo: 'bar', baz: [Circular *1] },
   buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
 }
 */
@@ -132,6 +132,7 @@ Serialized result (JSON):
     "undef": { "_SAType": "undef" },
     "regexp": {
       "_SAType": "RegExp",
+      "_SAId": 1,
       "_SAsource": "abc",
       "_SAflags": "gi"
     },
@@ -141,13 +142,14 @@ Serialized result (JSON):
     },
     "map": {
       "_SAType": "Map",
+      "_SAId": 2,
       "_SAkvPairs": [ [1, "one"], [2,"two"] ]
     },
     "custom": {
       "_SAType": "_SACustomObject",
-      "_SAId": "1",
+      "_SAId": 3,
       "_SAconstructorName": "CustomObj",
-      "_SAobject": { "foo": "bar", "baz": { "_SAType": "_SACustomObjectRef", "_SAId": 1 } }
+      "_SAobject": { "foo": "bar", "baz": { "_SAType": "_SACustomObjectRef", "_SAId": 3 } }
     },
     "buffer": {
       "_SAType": "Buffer",
@@ -166,7 +168,7 @@ const deser = SerAny.deserialize(ser);
   regexp: /abc/gi,
   bignum: 4000000000000000000n,
   map: Map(2) { 1 => 'one', 2 => 'two' },
-  custom: CustomObj { foo: 'bar', baz: Object [CustomObj] },  
+  custom: CustomObj <ref *1> { foo: 'bar', baz: CustomObj [Circular *1] },  
   buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
 }
 */
