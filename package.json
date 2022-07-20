@@ -1,6 +1,6 @@
 {
   "name": "serialize-anything",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "serialize and de-serialize any JavaScript data",
   "main": "index.js",
   "repository": {

@@ -642,12 +642,15 @@ function test26 (serialize, deserialize, options) {
     '    const custom = new CustomObj();\n' +
     '    Object.assign(custom,{foo:"bar"});\n' +
     '    let src = {\n' +
+    '      undef: undefined,\n' +
+    '      regexp: /abc/gi\n' +
+    '      bignum: 4000000000000000000n\n' +
     '      map: new Map([\n' +
     '        [1, \'one\'],\n' +
-    '        [2, \'two\'],\n' +
-    '        [3, \'three\'],\n' +
+    '        [2, \'two\']\n' +
     '      ]),\n' +
     '      custom\n' +
+    '      buffer: Buffer.from(\'hello world\')\n' +
     '    };\n'
   );
   try {
@@ -667,6 +670,7 @@ function test26 (serialize, deserialize, options) {
     console.log(`    ser:  '${ser}'`);
     let deser = deserialize(ser);
     console.log('    deser:', deser);
+    if (deser.map.get(1) != 'one') throw new Error('Map does not contain right value for key, "1"');
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test26 ' + err.toString());

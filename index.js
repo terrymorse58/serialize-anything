@@ -16,23 +16,52 @@ function namedConstructor(name) {
   return constructor;
 }
 
+// serialize one element of an object
+function serializeElement(elInfo, data) {
+  const elType = elInfo.type;
+  const elBehaviors = objectBehaviors[elType];
+  const elSerialize = elBehaviors.serialize;
+  const elIterate = elBehaviors.iterate;
+  const elStartValue = elInfo.value;
+  const str = "    ".repeat(1 + data.depth);
+  // data elements can change when serializing children - save a copy now
+  const objType = data.objType;
+  const obj = data.obj; 
+  const objSetChild = data.objSetChild;
+
+  // console.log(str + `  ${objType} > ${elType} evaluating...`);
+  // console.log(str, 'object is: ', obj);
+  if (elIterate) {
+    // console.log(str + `    ${objType} > ${elType} going deeper...`);
+    elInfo.value = serializeObject(elInfo.value, data.options, data);
+  } else if (elSerialize) {
+    // console.log(str + `    ${objType} > ${elType} serializing...`);
+    elInfo.value = elSerialize(elInfo.value, data);
+  }
+  const elHasChanged = (elInfo.value !== elStartValue);
+  if (elHasChanged) {
+    // console.log(str +
+    //   `    ${objType} > ${elType} updating child in parent...`);
+    //   console.log(str, 'again, object is: ', obj);
+      objSetChild(obj, elInfo);
+    // console.log(str +
+    //   `      ${objType} > ${elType} parent is now:`, obj);
+  }
+}
+
 // recursively serialize object in-place (depth first)
 function serializeObject (obj, options, data) {
 
   if (!data) throw 'Invalid data passed to serializeObject';
 
-  if (++data.depth > options.maxDepth) {
+  if (++data.depth > options.maxDepth)
     throw 'Error maximum depth of ' + options.maxDepth + ' exceeded - increase maxDepth?';
-  }
 
-  let str = "    ";
-  for (let i=0; i<data.depth; i++) {
-    str += '  ';
-  }
+  let str = "    ".repeat(1 + data.depth);
 
   const objType = objectType(obj, data);
 
-  //console.log(str + `serializeObject enter ${objType}`);
+  // console.log(str + `serializeObject enter ${objType}`);
 
   const objBehaviors = objectBehaviors[objType];
   const objSerialize = objBehaviors.serialize;
@@ -41,34 +70,18 @@ function serializeObject (obj, options, data) {
   const objCanBeReferenced = objBehaviors.canBeReferenced;
 
   if (objCanBeReferenced) {
+    // console.log(str + `adding id to ${objType}`);
     data.objToId.set(obj, ++data.objNum);
     obj._SAId = data.objNum;
   }
 
   if (objIterate) {
-    objIterate(obj, (elInfo) => {
-      const elType = elInfo.type;
-      const elBehaviors = objectBehaviors[elType];
-      const elSerialize = elBehaviors.serialize;
-      const elIterate = elBehaviors.iterate;
-      const elStartValue = elInfo.value;
-      // console.log(str + `  ${objType} > ${elType} evaluating...`);
-      if (elIterate) {
-        // console.log(str + `    ${objType} > ${elType} going deeper...`);
-        elInfo.value = serializeObject(elInfo.value, options, data);
-      } else if (elSerialize) {
-        // console.log(str + `    ${objType} > ${elType} serializing...`);
-        elInfo.value = elSerialize(elInfo.value, data);
-      }
-      const elHasChanged = (elInfo.value !== elStartValue);
-      if (elHasChanged) {
-        // console.log(str +
-        //   `    ${objType} > ${elType} updating child in parent...`);
-        objSetChild(obj, elInfo);
-        // console.log(str +
-        //   `      ${objType} > ${elType} parent is now:`, obj);
-      }
-    }, data);
+    // console.log(str + `iterating ${objType}`);
+    data.obj = obj;
+    data.objType = objType;
+    data.objSetChild = objSetChild;
+    data.options = options;
+    objIterate(obj, serializeElement, data);
   }
   if (objSerialize) {
     // console.log(str + `  ${objType} serializing in place ...`);
@@ -290,7 +303,7 @@ const arrayIterate = (array, callback, data) => {
       value: val,
       type: objectType(val, data)
     };
-    callback(elInfo);
+    callback(elInfo, data);
   }
 };
 
@@ -663,7 +676,7 @@ if (typeof Map !== 'undefined') {
             value: val,
             type: objectType(val, data)
           };
-          callback(elInfo);
+          callback(elInfo, data);
         });
       },
       setValue: (map, elInfo) => {
@@ -705,7 +718,7 @@ if (typeof Set !== 'undefined') {
             originalValue: val,
             type: objectType(val, data)
           };
-          callback(elInfo);
+          callback(elInfo, data);
         });
       },
       setValue: (set, elInfo) => {
@@ -802,7 +815,7 @@ const objectIterate = (obj, callback, data) => {
       value: value,
       type: objectType(value, data),
     };
-    callback(elInfo);
+    callback(elInfo, data);
   }
 };
 
