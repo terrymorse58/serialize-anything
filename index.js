@@ -33,7 +33,9 @@ function serializeElement(elInfo, data) {
   // console.log(str, 'object is: ', obj);
   if (elIterate) {
     // console.log(str + `    ${objType} > ${elType} going deeper...`);
+    data.depth++;
     elInfo.value = serializeObject(elInfo.value, data.options, data);
+    data.depth--;
   } else if (elSerialize) {
     // console.log(str + `    ${objType} > ${elType} serializing...`);
     elInfo.value = elSerialize(elInfo.value, data);
@@ -54,9 +56,9 @@ function serializeObject (obj, options, data) {
 
   if (!data) throw 'Invalid data passed to serializeObject';
 
-  if (++data.depth > options.maxDepth) {
-    throw 'Error maximum depth of ' + options.maxDepth + 
-      ' exceeded - increase maxDepth? - while attempting to serialize object with properties ' + Object.getOwnPropertyNames(obj);
+  if (data.depth > options.maxDepth) {
+    throw new Error('Error maximum depth of ' + options.maxDepth + 
+      ' exceeded - increase maxDepth? - while attempting to serialize object with properties ' + Object.getOwnPropertyNames(obj));
   }
 
   let str = "    ".repeat(1 + data.depth);
@@ -116,7 +118,7 @@ function serialize (item, options = undefined) {
   // console.log('serialize deepCopy iCopy:',iCopy);
 
   let data = { // data to pass through recursion
-    depth: 0,
+    depth: 1,
     objNum: 0, // keep track of number of distinct objects encountered
     objToId: new Map() // keep track of objNum for each distinct object
   };

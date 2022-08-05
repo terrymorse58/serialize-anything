@@ -1,15 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2022-08-05T00:56:54.934Z
+    src:   2022-08-05T02:54:14.261Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1659661014934
+    "_SAtimestamp": 1659668054261
   }
 }'
-    deser: Date: Thu Aug 04 2022 17:56:54 GMT-0700 (Pacific Daylight Time)
+    deser: Date: Thu Aug 04 2022 19:54:14 GMT-0700 (Pacific Daylight Time)
 
 Test2 (Map):
   let src = new Map();
@@ -19,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-05T00:56:54.937Z
+  { foo: 'bar' } => 2022-08-05T02:54:14.264Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -36,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1659661014937
+          "_SAtimestamp": 1659668054264
         }
       ]
     ]
@@ -44,7 +44,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-05T00:56:54.937Z
+  { foo: 'bar' } => 2022-08-05T02:54:14.264Z
 }
 
 Test3 (Function):
@@ -258,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-05T00:56:54.948Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-05T02:54:14.274Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -270,14 +270,14 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1659661014948
+          "_SAtimestamp": 1659668054274
         },
         "_SAId": 2
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-05T00:56:54.948Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-05T02:54:14.274Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -553,9 +553,38 @@ Test27 (circular object reference):
   deser.foo = "FOO_FOO";
     deser: <ref *1> { foo: 'FOO_FOO', bar: { bar: 'Bar', baz: [Circular *1] } }
 
+Test28 (max depth):
+    assertDoesNotThrow {
+      deserialize(serialize(wideObject));
+      deserialize(serialize(deepObject));
+      deserialize(serialize(extraWideObject));
+    }
+    assertThrows {
+      serialize(tooDeepObject);
+    }
+  
+
+Test29 (anonymous custom object)
+const src = new function() { this.foo = "bar"; }();
+
+    src:  { foo: 'bar' }
+    ser: {
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "_SAType": "_SACustomObject",
+    "_SAconstructorName": "",
+    "_SAobject": {
+      "foo": "bar",
+      "_SAId": 1
+    }
+  }
+}
+*** TEST FAILED:  Error: unable to deserialize - "" undefined
+
 End of test.
 
 Errors:  [
   'Test17 Error: serialize WeakSet not supported',
-  'Test18 Error: serialize WeakMap not supported'
+  'Test18 Error: serialize WeakMap not supported',
+  'Test29 Error: unable to deserialize - "" undefined'
 ]

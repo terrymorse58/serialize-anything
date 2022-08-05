@@ -5,9 +5,9 @@ const TS = require('./test-suite');
 
 const THIS_IS_A_TEST = "This is a test";
 
-// copied from `custom-objects.js` to handle custom objects
+// modified from `custom-objects.js` to handle custom objects
 SerAny._custom = function (name) {
-  let typeExists = eval('typeof ' + name + '!== "undefined"' );
+  let typeExists = name && eval('typeof ' + name + '!== "undefined"' );
   return typeExists ? eval('new ' + name + '()') : null;
 };
 SerAny._ds = SerAny.deserialize;

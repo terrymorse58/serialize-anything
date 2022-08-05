@@ -703,7 +703,65 @@ function test27(serialize, deserialize, options) {
 }
 tests.push(test27);
 
+// max depth - ensure that we serialize up to, but not exceeding max depth
+function test28(serialize, deserialize, options) {
+  console.log('\nTest28 (max depth):');
+  console.log(
+  `    assertDoesNotThrow {
+      deserialize(serialize(wideObject));
+      deserialize(serialize(deepObject));
+      deserialize(serialize(extraWideObject));
+    }
+    assertThrows {
+      serialize(tooDeepObject);
+    }
+  `);
+  let tooDeepObject;
+  try {
+    if (options.maxDepth <= 5) throw new Error("maxDepth must be at least five for this test to run");
+    let wideObject = Array.from({length: options.maxDepth - 5}, (x, i) => { return new Object(); } );
+    let extraWideObject = [...wideObject, Array.from({length: 10}, (x, i) => { return new Object(); })];
+    let generateDeepObject = (deepObject) => {
+      deepObject.deepestChild = deepObject.deepestChild.child = new Object();
+      return deepObject;
+    };
+    let deepObject = wideObject.reduce(generateDeepObject, new function () { this.deepestChild = this; }() );
+    tooDeepObject = extraWideObject.reduce(generateDeepObject, new function () { this.deepestChild = this; }() );
+    serialize(wideObject);
+    serialize(deepObject);
+    serialize(extraWideObject);
+  } catch (err) {
+    console.log('*** TEST FAILED: ', err);
+    errors.push('Test28 ' + err.toString());
+  }
+  try {
+    serialize(tooDeepObject);
+    console.log('*** TEST FAILED: ', err);
+    errors.push('Test28 - expected to fail serializing deep object, but didn\'t');
+  } catch (err) {} // we expect to catch an error here
+}
+tests.push(test28);
 
+// anonymous custom object
+function test29(serialize, deserialize, options) {
+  console.log('\nTest29 (anonymous custom object)');
+  console.log(
+`const src = new function() { this.foo = "bar"; }();
+`);
+  try {
+    const src = new function() { this.foo = "bar"; }();
+    console.log('    src: ', src);
+    let ser = serialize(src, options);
+    console.log('    ser:', ser);
+    const deser = deserialize(ser);
+    console.log('    deser:', deser);
+  } catch (err) {
+    console.log('*** TEST FAILED: ', err);
+    errors.push('Test29 ' + err.toString());
+  }
+
+}
+tests.push(test29);
 
 module.exports = {
   tests: tests,
