@@ -1,15 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2022-08-05T02:54:14.261Z
+    src:   2022-08-05T02:58:52.796Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1659668054261
+    "_SAtimestamp": 1659668332796
   }
 }'
-    deser: Date: Thu Aug 04 2022 19:54:14 GMT-0700 (Pacific Daylight Time)
+    deser: Date: Thu Aug 04 2022 19:58:52 GMT-0700 (Pacific Daylight Time)
 
 Test2 (Map):
   let src = new Map();
@@ -19,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-05T02:54:14.264Z
+  { foo: 'bar' } => 2022-08-05T02:58:52.804Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -36,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1659668054264
+          "_SAtimestamp": 1659668332804
         }
       ]
     ]
@@ -44,7 +44,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-05T02:54:14.264Z
+  { foo: 'bar' } => 2022-08-05T02:58:52.804Z
 }
 
 Test3 (Function):
@@ -258,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-05T02:54:14.274Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-05T02:58:52.813Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -270,14 +270,14 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1659668054274
+          "_SAtimestamp": 1659668332813
         },
         "_SAId": 2
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-05T02:54:14.274Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-05T02:58:52.813Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
