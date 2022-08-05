@@ -54,8 +54,10 @@ function serializeObject (obj, options, data) {
 
   if (!data) throw 'Invalid data passed to serializeObject';
 
-  if (++data.depth > options.maxDepth)
-    throw 'Error maximum depth of ' + options.maxDepth + ' exceeded - increase maxDepth?';
+  if (++data.depth > options.maxDepth) {
+    throw 'Error maximum depth of ' + options.maxDepth + 
+      ' exceeded - increase maxDepth? - while attempting to serialize object with properties ' + Object.getOwnPropertyNames(obj);
+  }
 
   let str = "    ".repeat(1 + data.depth);
 

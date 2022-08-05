@@ -1,15 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2022-07-19T05:16:19.339Z
+    src:   2022-08-05T00:56:54.934Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1658207779339
+    "_SAtimestamp": 1659661014934
   }
 }'
-    deser: Date: Mon Jul 18 2022 22:16:19 GMT-0700 (Pacific Daylight Time)
+    deser: Date: Thu Aug 04 2022 17:56:54 GMT-0700 (Pacific Daylight Time)
 
 Test2 (Map):
   let src = new Map();
@@ -19,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-07-19T05:16:19.350Z
+  { foo: 'bar' } => 2022-08-05T00:56:54.937Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -36,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1658207779350
+          "_SAtimestamp": 1659661014937
         }
       ]
     ]
@@ -44,7 +44,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-07-19T05:16:19.350Z
+  { foo: 'bar' } => 2022-08-05T00:56:54.937Z
 }
 
 Test3 (Function):
@@ -258,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2022-07-19T05:16:19.360Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-05T00:56:54.948Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -270,14 +270,14 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1658207779360
+          "_SAtimestamp": 1659661014948
         },
         "_SAId": 2
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2022-07-19T05:16:19.360Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-05T00:56:54.948Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -404,10 +404,10 @@ Test24 (undefined variable):
 Test25 (Error):
   let src = new Error("this is a sample error");
     src:  Error: this is a sample error
-    at test25 (/Users/jric/dev/patches/serialize-anything-circular/test/test-suite.js:623:13)
-    at /Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:33:3
+    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:623:13)
+    at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:32:10)
+    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:32:10)
     at Module._compile (node:internal/modules/cjs/loader:1105:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
     at Module.load (node:internal/modules/cjs/loader:981:32)
@@ -419,14 +419,14 @@ Test25 (Error):
   "_SA_Content": {
     "_SAType": "Error",
     "_SAmessage": "this is a sample error",
-    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/jric/dev/patches/serialize-anything-circular/test/test-suite.js:623:13)\n    at /Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:33:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:32:10)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Module._load (node:internal/modules/cjs/loader:827:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47"
+    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:623:13)\n    at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:33:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:32:10)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Module._load (node:internal/modules/cjs/loader:827:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47"
   }
 }'
     deser: Error: this is a sample error
-    at test25 (/Users/jric/dev/patches/serialize-anything-circular/test/test-suite.js:623:13)
-    at /Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:33:3
+    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:623:13)
+    at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:33:3
     at Array.forEach (<anonymous>)
-    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything-circular/test/test-serialize-anything.js:32:10)
+    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:32:10)
     at Module._compile (node:internal/modules/cjs/loader:1105:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
     at Module.load (node:internal/modules/cjs/loader:981:32)
