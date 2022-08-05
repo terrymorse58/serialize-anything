@@ -742,18 +742,22 @@ function test28(serialize, deserialize, options) {
 }
 tests.push(test28);
 
+function makeEmptyAnonymousObject() { return new Object(); }
+
 // anonymous custom object
 function test29(serialize, deserialize, options) {
   console.log('\nTest29 (anonymous custom object)');
   console.log(
 `const src = new function() { this.foo = "bar"; }();
+const ser = serialize(src);
+const des = deserialize(ser, function() { return new Object(); });
 `);
   try {
     const src = new function() { this.foo = "bar"; }();
     console.log('    src: ', src);
     let ser = serialize(src, options);
     console.log('    ser:', ser);
-    const deser = deserialize(ser);
+    const deser = deserialize(ser, function() { return new Object(); } );
     console.log('    deser:', deser);
   } catch (err) {
     console.log('*** TEST FAILED: ', err);

@@ -195,7 +195,7 @@ function deserializeObject (obj, getCustomObject, data) {
  * @return {*} - the deserialized object
  */
 function deserialize (jsonData, getCustomObject = undefined) {
-  // console.log('deserialize item:', item, ', getCustomObject:', getCustomObject);
+  // console.log('deserialize item:', jsonData, ', getCustomObject:', getCustomObject);
 
   let iCopy = JSON.parse(jsonData);
 
@@ -899,9 +899,10 @@ Object.assign(objectBehaviors, {
           throw 'Error: deserialize _SACustomObject - getCustomObject missing';
         }
         cObj = getCustomObject(cName);
+        // console.log('got custom object ' + cObj);
       }
       if (!cObj) {
-        throw 'Error: unable to deserialize - "' + cName + '" undefined';
+        throw new Error('unable to deserialize - "' + cName + '" undefined');
       }
       data.idToObj.set(srcObj._SAId, cObj);
       Object.assign(cObj, srcObj);

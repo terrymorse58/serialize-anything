@@ -5,8 +5,10 @@ const TS = require('./test-suite');
 
 const THIS_IS_A_TEST = "This is a test";
 
-// modified from `custom-objects.js` to handle custom objects
+// modified from `custom-objects.js` to handle custom objects,
+//   and anonymous constructors
 SerAny._custom = function (name) {
+  if (!name) name = 'Object';
   let typeExists = name && eval('typeof ' + name + '!== "undefined"' );
   return typeExists ? eval('new ' + name + '()') : null;
 };
