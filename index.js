@@ -86,6 +86,7 @@ function serializeObject (obj, options, data) {
     data.objToId.set(obj, ++data.objNum);
     obj._SAId = data.objNum;
     console.log(str + `adding ${obj._SAId} to ${data.path} of type ${objType}`);
+    console.log(str + 'need to iterate ' + Object.keys(obj));
   }
 
   if (objIterate) {
@@ -94,7 +95,7 @@ function serializeObject (obj, options, data) {
     data.objType = objType;
     data.objSetChild = objSetChild;
     data.options = options;
-    objIterate(obj, serializeElement, data); // TODO: check usage of data
+    objIterate(obj, serializeElement, data);
   }
   if (objSerialize) {
     // console.log(str + `  ${objType} serializing in place ...`);
@@ -245,10 +246,12 @@ function analyzeForCircular(obj) {
   let objToId = new Map();
   let data = {objToId: objToId};
 
+  console.log('analyzing object of type ' + obj.constructor.name + " with keys " + Object.keys(obj));
+
   function analyzeForCircularRecurse(obj, data, path) {
     let objType = objectType(obj, data);
     let behaviors = objectBehaviors[objType];
-    console.log('  '.repeat(path.length - 1) + path + '{' +
+    console.log(path + '{' +
       (typeof obj == 'object' ? (obj?.constructor?.name ? obj.constructor.name : 'Object')
         : typeof obj) + '}' +
         (obj?._SAId ? '[' + obj._SAId + ']' : ''));

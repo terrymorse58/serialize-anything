@@ -1,16 +1,17 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2022-08-06T04:47:37.908Z
+    src:   2022-08-06T05:18:42.219Z
     adding 1 to root of type Date
+    need to iterate _SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1659761257908
+    "_SAtimestamp": 1659763122219
   }
 }'
-    deser: Date: Fri Aug 05 2022 21:47:37 GMT-0700 (Pacific Daylight Time)
+    deser: Date: Fri Aug 05 2022 22:18:42 GMT-0700 (Pacific Daylight Time)
 
 Test2 (Map):
   let src = new Map();
@@ -20,9 +21,10 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-06T04:47:37.911Z
+  { foo: 'bar' } => 2022-08-06T05:18:42.222Z
 }
     adding 1 to root of type Map
+    need to iterate _SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -38,7 +40,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1659761257911
+          "_SAtimestamp": 1659763122222
         }
       ]
     ]
@@ -46,7 +48,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-06T04:47:37.911Z
+  { foo: 'bar' } => 2022-08-06T05:18:42.222Z
 }
 
 Test3 (Function):
@@ -54,6 +56,7 @@ Test3 (Function):
     src:   [Function: foo]
     src.toString:      function foo (x) { return x + 1;}
     adding 1 to root of type Function
+    need to iterate _SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -67,6 +70,7 @@ Test4: (RegExp)
   let src = [1,2,/abc/i];
     src:  [ 1, 2, /abc/i ]
     adding 1 to root of type Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": [
@@ -85,6 +89,7 @@ Test5 (Int8Array):
   let src = Int8Array.from([3, 4, 42]);
     src:   Int8Array(3) [ 3, 4, 42 ]
     adding 1 to root of type Int8Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -102,6 +107,7 @@ Test6 (Uint8Array):
   let src = Uint8Array.from([3, 128, 64]);
     src:   Uint8Array(3) [ 3, 128, 64 ]
     adding 1 to root of type Uint8Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -119,6 +125,7 @@ Test7 (Int16Array):
   let src = Int16Array.from([32, 128, 64]);
     src:   Int16Array(3) [ 32, 128, 64 ]
     adding 1 to root of type Int16Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -136,6 +143,7 @@ Test8 (Uint16Array):
   let src = Uint16Array.from([32, 128, 64]);
     src:   Uint16Array(3) [ 32, 128, 64 ]
     adding 1 to root of type Uint16Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -153,6 +161,7 @@ Test9 (Int32Array):
   let src = Int32Array.from([32, 128, 64]);
     src:   Int32Array(3) [ 32, 128, 64 ]
     adding 1 to root of type Int32Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -170,6 +179,7 @@ Test10 (Uint32Array):
   let src = Uint32Array.from([32, 128, 64]);
     src:   Uint32Array(3) [ 32, 128, 64 ]
     adding 1 to root of type Uint32Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -187,6 +197,7 @@ Test11 (Float32Array):
   let src = Float32Array.from([32, 128, 64]);
     src:   Float32Array(3) [ 32, 128, 64 ]
     adding 1 to root of type Float32Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -204,6 +215,7 @@ Test12 (Float64Array):
   let src = Float64Array.from([32, 128, 64]);
     src:   Float64Array(3) [ 32, 128, 64 ]
     adding 1 to root of type Float64Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -221,6 +233,7 @@ Test13 (BigInt64Array):
   let src = BigInt64Array.from([32, 128, 64]);
     src:   BigInt64Array(3) [ 3n, 4n, 42n ]
     adding 1 to root of type BigInt64Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -238,6 +251,7 @@ Test14 (BigUint64Array):
   let src = BigUint64Array.from([3000000000000000000n, 4n, 42n]);
     src:   BigUint64Array(3) [ 3000000000000000000n, 4n, 42n ]
     adding 1 to root of type BigUint64Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -265,6 +279,7 @@ Test15 (ArrayBuffer):
   byteLength: 8
 }
     adding 1 to root of type ArrayBuffer
+    need to iterate _SAId
     ser:  '{"_Serialize_Any_Encoded":true,"_SA_Content":{"_SAType":"ArrayBuffer","_SAvalues":[1,2,3,4,5,127,0,0]}}'
     deser:  ArrayBuffer {
   [Uint8Contents]: <01 02 03 04 05 7f 00 00>,
@@ -273,9 +288,11 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-06T04:47:37.922Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-06T05:18:42.231Z } }
     adding 1 to root of type Set
+    need to iterate _SAId
         adding 2 to root, of type Object
+        need to iterate createdAt,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -287,14 +304,14 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1659761257922
+          "_SAtimestamp": 1659763122231
         },
         "_SAId": 2
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-06T04:47:37.922Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-06T05:18:42.231Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -302,6 +319,7 @@ Test17 (WeakSet):
   src.add(obj);
     src:  WeakSet { <items unknown> }
     adding 1 to root of type WeakSet
+    need to iterate _SAId
 *** TEST FAILED: Error: serialize WeakSet not supported
 
 Test18 (WeakMap):
@@ -310,12 +328,14 @@ Test18 (WeakMap):
   src.set(obj, 42);
     src:  WeakMap { <items unknown> }
     adding 1 to root of type WeakMap
+    need to iterate _SAId
 *** TEST FAILED: Error: serialize WeakMap not supported
 
 Test19 (Buffer):
   let src = Buffer.from("hello world");
     src:  <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
     adding 1 to root of type Buffer
+    need to iterate 0,1,2,3,4,5,6,7,8,9,10,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -332,6 +352,7 @@ Test20 (CustomObject):
   let src = new CustomObject();
     src:  CustomObject {}
     adding 1 to root of type CustomObject
+    need to iterate _SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -354,8 +375,11 @@ Test21 (CustomArray with RegExp):
     src:  CustomArray(4) [ 1, 2, 'foo', { key: [ 1, 2, 3, /abc/g ] } ]
     src.custom():  I am a custom Array
     adding 1 to root of type CustomArray
+    need to iterate 0,1,2,3,_SAId
         adding 2 to root,3 of type Object
+        need to iterate key,_SAId
             adding 3 to root,3,key of type Array
+            need to iterate 0,1,2,3,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -387,6 +411,7 @@ Test22 (Array containing BigInt):
   let src = [1, 2, 3000000000n];
     src:  [ 1, 2, 3000000000n ]
     adding 1 to root of type Array
+    need to iterate 0,1,2,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": [
@@ -404,6 +429,7 @@ Test23 (Object containing undefined prop):
   let src = {foo: "bar", notSet: undefined};
     src:  { foo: 'bar', notSet: undefined }
     adding 1 to root of type Object
+    need to iterate foo,notSet,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -441,6 +467,7 @@ Test25 (Error):
     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
     at node:internal/main/run_main_module:17:47
     adding 1 to root of type Error
+    need to iterate _SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -473,7 +500,7 @@ Test26 (demo):
         [1, 'one'],
         [2, 'two']
       ]),
-      custom
+      custom: custom
       buffer: Buffer.from('hello world')
     };
 
@@ -486,8 +513,11 @@ Test26 (demo):
   buffer: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
 }
     adding 1 to root of type Object
+    need to iterate undef,regexp,bignum,map,custom,buffer,_SAId
         adding 2 to root,map of type Map
+        need to iterate _SAId
         adding 3 to root,custom of type CustomObject
+        need to iterate foo,_SAId
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -564,7 +594,9 @@ Test27 (circular object reference):
   src.bar.baz = src;
     src:  <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
     adding 1 to root of type Object
+    need to iterate foo,bar,_SAId
         adding 2 to root,bar of type Object
+        need to iterate bar,baz,_SAId
     ser: {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -596,81 +628,157 @@ Test28 (max depth):
     }
   
     adding 1 to root of type Array
+    need to iterate 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,_SAId
         adding 2 to root,0 of type Object
+        need to iterate _SAId
         adding 3 to root,1 of type Object
+        need to iterate _SAId
         adding 4 to root,2 of type Object
+        need to iterate _SAId
         adding 5 to root,3 of type Object
+        need to iterate _SAId
         adding 6 to root,4 of type Object
+        need to iterate _SAId
         adding 7 to root,5 of type Object
+        need to iterate _SAId
         adding 8 to root,6 of type Object
+        need to iterate _SAId
         adding 9 to root,7 of type Object
+        need to iterate _SAId
         adding 10 to root,8 of type Object
+        need to iterate _SAId
         adding 11 to root,9 of type Object
+        need to iterate _SAId
         adding 12 to root,10 of type Object
+        need to iterate _SAId
         adding 13 to root,11 of type Object
+        need to iterate _SAId
         adding 14 to root,12 of type Object
+        need to iterate _SAId
         adding 15 to root,13 of type Object
+        need to iterate _SAId
         adding 16 to root,14 of type Object
+        need to iterate _SAId
     adding 1 to root of type CustomObject
+    need to iterate deepestChild,child,_SAId
         adding 2 to root,deepestChild of type Object
+        need to iterate _SAId
         adding 3 to root,child of type Object
+        need to iterate child,_SAId
             adding 4 to root,child,child of type Object
+            need to iterate child,_SAId
                 adding 5 to root,child,child,child of type Object
+                need to iterate child,_SAId
                     adding 6 to root,child,child,child,child of type Object
+                    need to iterate child,_SAId
                         adding 7 to root,child,child,child,child,child of type Object
+                        need to iterate child,_SAId
                             adding 8 to root,child,child,child,child,child,child of type Object
+                            need to iterate child,_SAId
                                 adding 9 to root,child,child,child,child,child,child,child of type Object
+                                need to iterate child,_SAId
                                     adding 10 to root,child,child,child,child,child,child,child,child of type Object
+                                    need to iterate child,_SAId
                                         adding 11 to root,child,child,child,child,child,child,child,child,child of type Object
+                                        need to iterate child,_SAId
                                             adding 12 to root,child,child,child,child,child,child,child,child,child,child of type Object
+                                            need to iterate child,_SAId
                                                 adding 13 to root,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                need to iterate child,_SAId
                                                     adding 14 to root,child,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                    need to iterate child,_SAId
                                                         adding 15 to root,child,child,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                        need to iterate child,_SAId
                                                             adding 16 to root,child,child,child,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                            need to iterate child,_SAId
     adding 1 to root of type Array
+    need to iterate 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,_SAId
         adding 2 to root,0 of type Object
+        need to iterate _SAId
         adding 3 to root,1 of type Object
+        need to iterate _SAId
         adding 4 to root,2 of type Object
+        need to iterate _SAId
         adding 5 to root,3 of type Object
+        need to iterate _SAId
         adding 6 to root,4 of type Object
+        need to iterate _SAId
         adding 7 to root,5 of type Object
+        need to iterate _SAId
         adding 8 to root,6 of type Object
+        need to iterate _SAId
         adding 9 to root,7 of type Object
+        need to iterate _SAId
         adding 10 to root,8 of type Object
+        need to iterate _SAId
         adding 11 to root,9 of type Object
+        need to iterate _SAId
         adding 12 to root,10 of type Object
+        need to iterate _SAId
         adding 13 to root,11 of type Object
+        need to iterate _SAId
         adding 14 to root,12 of type Object
+        need to iterate _SAId
         adding 15 to root,13 of type Object
+        need to iterate _SAId
         adding 16 to root,14 of type Object
+        need to iterate _SAId
         adding 17 to root,15 of type Array
+        need to iterate 0,1,2,3,4,5,6,7,8,9,_SAId
             adding 18 to root,15,0 of type Object
+            need to iterate _SAId
             adding 19 to root,15,1 of type Object
+            need to iterate _SAId
             adding 20 to root,15,2 of type Object
+            need to iterate _SAId
             adding 21 to root,15,3 of type Object
+            need to iterate _SAId
             adding 22 to root,15,4 of type Object
+            need to iterate _SAId
             adding 23 to root,15,5 of type Object
+            need to iterate _SAId
             adding 24 to root,15,6 of type Object
+            need to iterate _SAId
             adding 25 to root,15,7 of type Object
+            need to iterate _SAId
             adding 26 to root,15,8 of type Object
+            need to iterate _SAId
             adding 27 to root,15,9 of type Object
+            need to iterate _SAId
     adding 1 to root of type CustomObject
+    need to iterate deepestChild,child,_SAId
         adding 2 to root,deepestChild of type Object
+        need to iterate _SAId
         adding 3 to root,child of type Object
+        need to iterate child,_SAId
             adding 4 to root,child,child of type Object
+            need to iterate child,_SAId
                 adding 5 to root,child,child,child of type Object
+                need to iterate child,_SAId
                     adding 6 to root,child,child,child,child of type Object
+                    need to iterate child,_SAId
                         adding 7 to root,child,child,child,child,child of type Object
+                        need to iterate child,_SAId
                             adding 8 to root,child,child,child,child,child,child of type Object
+                            need to iterate child,_SAId
                                 adding 9 to root,child,child,child,child,child,child,child of type Object
+                                need to iterate child,_SAId
                                     adding 10 to root,child,child,child,child,child,child,child,child of type Object
+                                    need to iterate child,_SAId
                                         adding 11 to root,child,child,child,child,child,child,child,child,child of type Object
+                                        need to iterate child,_SAId
                                             adding 12 to root,child,child,child,child,child,child,child,child,child,child of type Object
+                                            need to iterate child,_SAId
                                                 adding 13 to root,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                need to iterate child,_SAId
                                                     adding 14 to root,child,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                    need to iterate child,_SAId
                                                         adding 15 to root,child,child,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                        need to iterate child,_SAId
                                                             adding 16 to root,child,child,child,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                            need to iterate child,_SAId
                                                                 adding 17 to root,child,child,child,child,child,child,child,child,child,child,child,child,child,child,child of type Object
+                                                                need to iterate child,_SAId
 
 Test29 (anonymous custom object)
 const src = new function() { this.foo = "bar"; }();
@@ -679,6 +787,7 @@ const des = deserialize(ser, function() { return new Object(); });
 
     src:  { foo: 'bar' }
     adding 1 to root of type CustomObject
+    need to iterate foo,_SAId
     ser: {
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {

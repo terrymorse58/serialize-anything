@@ -649,7 +649,7 @@ function test26 (serialize, deserialize, options) {
     '        [1, \'one\'],\n' +
     '        [2, \'two\']\n' +
     '      ]),\n' +
-    '      custom\n' +
+    '      custom: custom\n' +
     '      buffer: Buffer.from(\'hello world\')\n' +
     '    };\n'
   );
@@ -662,7 +662,7 @@ function test26 (serialize, deserialize, options) {
       regexp: /abc/gi,
       bignum: 4000000000000000000n,
       map: new Map([[1, 'one'], [2, 'two']]),
-      custom,
+      custom: custom,
       buffer: Buffer.from('hello world')
     };
     console.log('    src: ', src);
