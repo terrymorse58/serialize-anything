@@ -83,9 +83,9 @@ function serializeObject (obj, options, data) {
   const objCanBeReferenced = obj instanceof Object // objBehaviors.canBeReferenced;
 
   if (objCanBeReferenced) {
-    // console.log(str + `adding id to ${objType}`);
     data.objToId.set(obj, ++data.objNum);
     obj._SAId = data.objNum;
+    console.log(str + `adding ${obj._SAId} to ${data.path} of type ${objType}`);
   }
 
   if (objIterate) {
@@ -195,7 +195,7 @@ function deserializeObject (obj, getCustomObject, data) {
     obj = objDeserialize(obj, getCustomObject, data);
     objType = objectType(obj, data);
     objBehaviors = objectBehaviors[objType];
-    if (objBehaviors.canBeReferenced) delete obj._SAId;
+    if (obj?._SAId) delete obj._SAId;
   }
 
   deserializeChildren(obj, getCustomObject, data, objBehaviors);
@@ -250,11 +250,11 @@ function analyzeForCircular(obj) {
     let behaviors = objectBehaviors[objType];
     console.log('  '.repeat(path.length - 1) + path + '{' +
       (typeof obj == 'object' ? (obj?.constructor?.name ? obj.constructor.name : 'Object')
-        : typeof obj) +
-        '}');
-    if (behaviors.canBeReferenced) {      
+        : typeof obj) + '}' +
+        (obj?._SAId ? '[' + obj._SAId + ']' : ''));
+    if (obj instanceof Object) {      
       if (objToId.has(obj)) {
-        console.log('DUPLICATE of ' + objToId.get(obj));
+        console.log('DUPLICATE of object ' + obj._SAId + ' at ' + objToId.get(obj));
         return;
       }
       objToId.set(obj, path);
@@ -405,8 +405,7 @@ const objectBehaviors = {
     setValue: (array, elInfo) => {
       // console.log('setting array value for elInfo:',elInfo);
       array[elInfo.key] = elInfo.value;
-    },
-    canBeReferenced: true
+    }
   },
   'Date': {
     type: Date,
@@ -430,8 +429,7 @@ const objectBehaviors = {
         _SAsource: regex.source,
         _SAflags: regex.flags
       }
-    },
-    canBeReferenced: true
+    }
   },
   "RegExp_Serialized": {
     deserialize: (srcSer) => {
@@ -445,8 +443,7 @@ const objectBehaviors = {
         _SAType: "Function",
         _SAfunction: fn.toString()
       }
-    },
-    canBeReferenced: true
+    }
   },
   "Function_Serialized": {
     deserialize: (srcSer) => {
@@ -761,8 +758,7 @@ if (typeof Map !== 'undefined') {
       setValue: (map, elInfo) => {
         // console.log('setting map value for elInfo:',elInfo);
         map.set(elInfo.key, elInfo.value);
-      },
-      canBeReferenced: true
+      }
     },
     'Map_Serialized': {
       deserialize: (serData) => {
@@ -805,8 +801,7 @@ if (typeof Set !== 'undefined') {
         set.delete(elInfo.originalValue);
         set.add(elInfo.value);
         elInfo.originalValue = elInfo.value;
-      },
-      canBeReferenced: true
+      }
     },
     "Set_Serialized": {
       deserialize: (srcSer) => {
@@ -848,8 +843,7 @@ if (typeof Buffer !== 'undefined') {
           _SAType: "Buffer",
           _SAutf8String: buf.toString()
         }
-      },
-      canBeReferenced: true
+      }
     },
     "Buffer_Serialized": {
       deserialize: (srcSer) => {
@@ -870,8 +864,7 @@ if (typeof Error !== 'undefined') {
           _SAmessage: err.message,
           _SAstack: err.stack
         }
-      },
-      canBeReferenced: true
+      }
     },
     "Error_Serialized": {
       deserialize: (srcSer) => {
@@ -912,8 +905,7 @@ Object.assign(objectBehaviors, {
     setValue: (array, elInfo) => {
       // console.log('setting custom array value for elInfo:',elInfo);
       array[elInfo.key] = elInfo.value;
-    },
-    canBeReferenced: true
+    }
   },
 
   "CustomObject": {
@@ -928,8 +920,7 @@ Object.assign(objectBehaviors, {
     setValue: (obj, elInfo) => {
       // console.log('setting CustomObject value for elInfo:',elInfo);
       obj[elInfo.key] = elInfo.value;
-    },
-    canBeReferenced: true
+    }
   },
   "Object": {
     type: Object,
@@ -941,8 +932,7 @@ Object.assign(objectBehaviors, {
     deserialize: (srcSer, getCustomObject, data) => {
       data.idToObj.set(srcSer._SAId, srcSer);
       return srcSer;
-    },
-    canBeReferenced: true
+    }
   },
   "_SAObjectRef": {
     // An additional reference to an object that we've seen before
@@ -983,8 +973,7 @@ Object.assign(objectBehaviors, {
       Object.assign(cObj, srcObj);
       delete cObj._SAId;
       return cObj;
-    },
-    canBeReferenced: true
+    }
   },
   "_SACustomArray": {
     // any array with a custom constructor name
@@ -1007,8 +996,7 @@ Object.assign(objectBehaviors, {
       }
       array = array.concat(array, values);
       return array;
-    },
-    canBeReferenced: true
+    }
   },
   'unknown': {
   },
