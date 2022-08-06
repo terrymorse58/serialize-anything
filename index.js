@@ -23,7 +23,7 @@ function serializeElement(elInfo, data) {
   const elSerialize = elBehaviors.serialize;
   const elIterate = elBehaviors.iterate;
   const elStartValue = elInfo.value;
-  const str = "    ".repeat(1 + data.depth);
+  const str = "    ".repeat(data.path.length);
   // data elements can change when serializing children - save a copy now
   const objType = data.objType;
   const obj = data.obj; 
@@ -33,9 +33,9 @@ function serializeElement(elInfo, data) {
   // console.log(str, 'object is: ', obj);
   if (elIterate) {
     // console.log(str + `    ${objType} > ${elType} going deeper...`);
-    data.depth++;
+    data.path.push(elInfo.key);
     elInfo.value = serializeObject(elInfo.value, data.options, data);
-    data.depth--;
+    data.path.pop(elInfo.key);
   } else if (elSerialize) {
     // console.log(str + `    ${objType} > ${elType} serializing...`);
     elInfo.value = elSerialize(elInfo.value, data);
@@ -51,17 +51,26 @@ function serializeElement(elInfo, data) {
   }
 }
 
-// recursively serialize object in-place (depth first)
+/**
+ * recursively serialize object in-place (depth first) 
+ * 
+ * @param obj - the object to serialize
+ * @param options - options on how to serialize
+ * @param options.maxDepth - objects deeper than this, we throw an error
+ * @param data - keep track of state
+ * @param data.path - path to the object through properties from root
+ * @param data.objNum - largest issued sequential guid
+*/ 
 function serializeObject (obj, options, data) {
 
   if (!data) throw 'Invalid data passed to serializeObject';
 
-  if (data.depth > options.maxDepth) {
+  if (data.path.length > options.maxDepth) {
     throw new Error('Error maximum depth of ' + options.maxDepth + 
-      ' exceeded - increase maxDepth? - while attempting to serialize object with properties ' + Object.getOwnPropertyNames(obj));
+      ' exceeded - increase maxDepth? - while attempting to serialize ' + data.path);
   }
 
-  let str = "    ".repeat(1 + data.depth);
+  let str = "    ".repeat(data.path.length);
 
   const objType = objectType(obj, data);
 
@@ -71,7 +80,7 @@ function serializeObject (obj, options, data) {
   const objSerialize = objBehaviors.serialize;
   const objIterate = objBehaviors.iterate;
   const objSetChild = objBehaviors.setValue;
-  const objCanBeReferenced = objBehaviors.canBeReferenced;
+  const objCanBeReferenced = obj instanceof Object // objBehaviors.canBeReferenced;
 
   if (objCanBeReferenced) {
     // console.log(str + `adding id to ${objType}`);
@@ -85,7 +94,7 @@ function serializeObject (obj, options, data) {
     data.objType = objType;
     data.objSetChild = objSetChild;
     data.options = options;
-    objIterate(obj, serializeElement, data);
+    objIterate(obj, serializeElement, data); // TODO: check usage of data
   }
   if (objSerialize) {
     // console.log(str + `  ${objType} serializing in place ...`);
@@ -118,7 +127,7 @@ function serialize (item, options = undefined) {
   // console.log('serialize deepCopy iCopy:',iCopy);
 
   let data = { // data to pass through recursion
-    depth: 1,
+    path: ['root'],
     objNum: 0, // keep track of number of distinct objects encountered
     objToId: new Map() // keep track of objNum for each distinct object
   };
@@ -129,9 +138,16 @@ function serialize (item, options = undefined) {
     _SA_Content: iCopy
   };
 
-  return options.pretty
-    ? JSON.stringify(saWrapper, null, 2)
-    : JSON.stringify(saWrapper);
+  try {
+    return options.pretty
+      ? JSON.stringify(saWrapper, null, 2)
+      : JSON.stringify(saWrapper);
+  } catch (err) {
+    if (err instanceof TypeError && err.message.includes('circular')) {
+      analyzeForCircular(saWrapper);
+    } else console.log("uknown error from JSON.stringify: " + err);
+    throw err;
+  }
 
 }
 
@@ -152,7 +168,9 @@ const deserializeChildren = (obj, getCustomObject, data, objBehaviors) => {
     // debug
     // console.log('deserializing ' + elType);
     if (elIterate) {
+      data.path.push[elInfo.key];
       elInfo.value = deserializeObject(elInfo.value, getCustomObject, data);
+      data.path.pop[elInfo.key];
     } else if (elDeserialize) {
       elInfo.value = elDeserialize(elInfo.value, getCustomObject, data);
       objSetChild(obj, elInfo);
@@ -162,8 +180,6 @@ const deserializeChildren = (obj, getCustomObject, data, objBehaviors) => {
 
 // recursively deserialize the object (breadth first)
 function deserializeObject (obj, getCustomObject, data) {
-  data.depth++;
-
   // debug
   // let str = '    '; for (let i = 0; i < data.depth; i++) {str += '  ';}
   // console.log(str + 'deserializeObject obj:', obj);
@@ -200,7 +216,7 @@ function deserialize (jsonData, getCustomObject = undefined) {
   let iCopy = JSON.parse(jsonData);
 
   let data = { // data to pass through recursion
-    depth: 0,
+    path: ['root'], // keep track of path down through object/children
     objNum: 0, // keep track of number of distinct objects encountered
     idToObj: new Map() // keep track of obj for each id, in case more references
   };
@@ -217,6 +233,41 @@ function deserialize (jsonData, getCustomObject = undefined) {
   return deserializeObject(iCopy, getCustomObject, data);
 }
 
+/**
+ * This is for debugging any failures in the class to fully flatten
+ *   a datastructure, i.e. if it leaves a circular reference, then why?
+ * 
+ * We simply breadth-first run through the object, printing property names as we go
+ *   and looking for a circular reference.
+ * @param {Object} obj 
+ */
+function analyzeForCircular(obj) {
+  let objToId = new Map();
+  let data = {objToId: objToId};
+
+  function analyzeForCircularRecurse(obj, data, path) {
+    let objType = objectType(obj, data);
+    let behaviors = objectBehaviors[objType];
+    console.log('  '.repeat(path.length - 1) + path + '{' +
+      (typeof obj == 'object' ? (obj?.constructor?.name ? obj.constructor.name : 'Object')
+        : typeof obj) +
+        '}');
+    if (behaviors.canBeReferenced) {      
+      if (objToId.has(obj)) {
+        console.log('DUPLICATE of ' + objToId.get(obj));
+        return;
+      }
+      objToId.set(obj, path);
+    }
+    if (behaviors.iterate) {
+      behaviors.iterate(obj, (elInfo, data) => {
+        analyzeForCircularRecurse(elInfo.value, data, [...path, elInfo.key]);
+      }, data);
+    }
+  }
+  analyzeForCircularRecurse(obj, data, ['root'] /* path */);
+}
+
 // return true if the item is a primitive data type
 const isPrimitive = (item) => {
   let type = typeof item;
@@ -224,7 +275,16 @@ const isPrimitive = (item) => {
     || type === 'symbol' || item === null;
 };
 
-
+/**
+ * Gets the type of an object for purposes of serializing and deserializing
+ * @param {*} obj - obj to identify type
+ * @param {*} data - extra data needed for identification
+ * @param {Map} data.objToId - if already seen this obj -> type is reference
+ * @returns {String} the type name:
+ *   'primitive', 'undef', 'BigInt', '_SACustom*', '*_Serialized',
+ *   '_SAObjectRef', <known constructor name, e.g. Array, Function, Date, ...>,
+ *   'CustomArray', 'CustomObject', 'Object'
+ */
 const objectType = (obj, data) => {
 
   // console.log('        objectType() obj:',obj);
@@ -311,6 +371,21 @@ const arrayIterate = (array, callback, data) => {
   }
 };
 
+/**
+ * Define behaviors for each javascript type we know about
+ * type: the object's native type, e.g. Array, Date, etc.
+ * serialize: (src, data) => { return String; }
+ *    data: passed through to help serialize or deserialize
+ *          should include objToId / idToObj Map, respectively
+ * deserialize: (String, data) => { return instantiated type (reverse of serialize) }
+ * iterate: (obj, cb, data)
+ *    obj - the object being iterated
+ *    cb - (elInfo, data) - what to do with the iterated field
+ *       elInfo - {key: name of the element, value: its value}
+ *       data - see above
+ *    data - see above
+ * setValue: (obj, elInfo) - set a new iterable field
+ */
 const objectBehaviors = {
   "Array": {
     type: Array,
@@ -885,7 +960,7 @@ Object.assign(objectBehaviors, {
   },
   "_SACustomObject": {
     // any object with a custom constructor name
-    //   should this have an iterator?
+    iterate: objectIterate,
     deserialize: (srcSer, getCustomObject, data) => {
       const cName = srcSer._SAconstructorName;
       const srcObj = srcSer._SAobject;
