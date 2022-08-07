@@ -302,65 +302,44 @@ const objectType = (obj, data) => {
   // console.log('        objectType() obj:',obj);
 
   let type = null;
-  const consName = obj && obj.constructor && obj.constructor.name;
+  const consName = obj?.constructor?.name;
 
   // force undefined to a serializable type
   // because JSON.stringify strips out properties set to undefined
-  if (typeof obj === 'undefined') {
-    type = 'undef';
-  }
+  if (typeof obj === 'undefined') type = 'undef';
 
   // match primitives right away
-  else if (isPrimitive(obj) || !obj instanceof Object) {
-    type = 'primitive';
-  }
+  else if (isPrimitive(obj) || !obj instanceof Object) type = 'primitive';
 
   // force BigInt to a serializable type
   // because JSON.stringify throws error on BigInt
-  else if (typeof obj === 'bigint') {
-    type = 'BigInt';
-  }
+  else if (typeof obj === 'bigint') type = 'BigInt';
 
   // return type of custom serialized objects
-  else if (obj._SAType && obj._SAType.includes('_SACustom')) {
-    type = obj._SAType;
-  }
+  else if (obj._SAType && obj._SAType.includes('_SACustom')) type = obj._SAType;
 
   // return type of serialized regular objects
-  else if (typeof obj._SAType !== 'undefined') {
-    type = obj._SAType + '_Serialized';
-  }
+  else if (typeof obj._SAType !== 'undefined') type = obj._SAType + '_Serialized';
 
   // is this a reference to an object we've already seen?
-  else if (data.objToId?.has(obj)) {
-    type = '_SAObjectRef';
-  }
+  else if (data.objToId?.has(obj)) type = '_SAObjectRef';
 
   // try to match object constructor name
   else if (typeof consName === 'string' && consName.length
-    && objectBehaviors[consName]) {
+    && objectBehaviors[consName])
     type = consName;
-  }
 
   // identify custom array
-  else if (obj instanceof Array && consName !== 'Array') {
-      type = 'CustomArray';
-  }
+  else if (obj instanceof Array && consName !== 'Array') type = 'CustomArray';
 
   // identify custom object
-  else if (obj instanceof Object && consName !== 'Object') {
-    type = 'CustomObject';
-  }
+  else if (obj instanceof Object && consName !== 'Object') type = 'CustomObject';
 
   // identify as vanilla Array
-  else if (obj instanceof Array) {
-    type = 'CustomObject';
-  }
+  else if (obj instanceof Array) type = 'CustomObject';
 
   // final choice is vanilla Object
-  else {
-    type = 'Object';
-  }
+  else type = 'Object';
 
   // console.log('          objectType for obj: ', obj, ' is "', type, '"');
   return type;

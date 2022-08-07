@@ -1,15 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2022-08-07T04:08:48.028Z
+    src:   2022-08-07T04:32:02.147Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1659845328028
+    "_SAtimestamp": 1659846722147
   }
 }'
-    deser: Date: Sat Aug 06 2022 21:08:48 GMT-0700 (Pacific Daylight Time)
+    deser: Date: Sat Aug 06 2022 21:32:02 GMT-0700 (Pacific Daylight Time)
 
 Test2 (Map):
   let src = new Map();
@@ -19,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-07T04:08:48.032Z
+  { foo: 'bar' } => 2022-08-07T04:32:02.154Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -36,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1659845328032
+          "_SAtimestamp": 1659846722154
         }
       ]
     ]
@@ -44,7 +44,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-07T04:08:48.032Z
+  { foo: 'bar' } => 2022-08-07T04:32:02.154Z
 }
 
 Test3 (Function):
@@ -258,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-07T04:08:48.043Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-07T04:32:02.165Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -270,14 +270,14 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1659845328043
+          "_SAtimestamp": 1659846722165
         },
         "_SAId": 2
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-07T04:08:48.043Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-07T04:32:02.165Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -536,10 +536,19 @@ Test27 (circular object reference):
     deser: <ref *1> { foo: 'FOO_FOO', bar: { bar: 'Bar', baz: [Circular *1] } }
 
 Test28 (max depth):
+    let wideObject = Array.from({length: options.maxDepth - 5}, (x, i) => { return new Object(); } );
+    let extraWideObject = [...wideObject, Array.from({length: 10}, (x, i) => { return new Object(); })];
+    let generateDeepObject = (deepObject) => {
+      deepObject.deepestChild = deepObject.deepestChild.child = new Object();
+      return deepObject;
+    };
+    let deepObject = wideObject.reduce(generateDeepObject, new function () { this.deepestChild = this; }() );
+    tooDeepObject = extraWideObject.reduce(generateDeepObject, new function () { this.deepestChild = this; }() );
+  
     assertDoesNotThrow {
-      deserialize(serialize(wideObject));
-      deserialize(serialize(deepObject));
-      deserialize(serialize(extraWideObject));
+      serialize(wideObject);
+      serialize(deepObject);
+      serialize(extraWideObject);
     }
     assertThrows {
       serialize(tooDeepObject);
