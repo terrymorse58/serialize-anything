@@ -29,7 +29,7 @@ function serializeElement(elInfo, data) {
   const obj = data.obj; 
   const objSetChild = data.objSetChild;
 
-  // console.log(str + `  ${objType} > ${elType} evaluating...`);
+  // console.log(str + `  ${objType} > ${elInfo.key}{${elType}} evaluating...`);
   // console.log(str, 'object is: ', obj);
   if (elIterate) {
     // console.log(str + `    ${objType} > ${elType} going deeper...`);
@@ -37,7 +37,7 @@ function serializeElement(elInfo, data) {
     elInfo.value = serializeObject(elInfo.value, data.options, data);
     data.path.pop(elInfo.key);
   } else if (elSerialize) {
-    // console.log(str + `    ${objType} > ${elType} serializing...`);
+    // console.log(str + `    ${objType} > ${elInfo.key}{${elType}} serializing...`);
     elInfo.value = elSerialize(elInfo.value, data);
   }
   const elHasChanged = (elInfo.value !== elStartValue);
@@ -80,22 +80,29 @@ function serializeObject (obj, options, data) {
   const objSerialize = objBehaviors.serialize;
   const objIterate = objBehaviors.iterate;
   const objSetChild = objBehaviors.setValue;
-  const objCanBeReferenced = obj instanceof Object // objBehaviors.canBeReferenced;
+  const objCanBeReferenced = ! isPrimitive(obj); // objBehaviors.canBeReferenced;
 
   if (objCanBeReferenced) {
     data.objToId.set(obj, ++data.objNum);
     obj._SAId = data.objNum;
-    console.log(str + `adding ${obj._SAId} to ${data.path} of type ${objType}`);
-    console.log(str + 'need to iterate ' + Object.keys(obj));
+    // console.log(str + `adding ${obj._SAId} to ${data.path} of type ${objType}`);
+    // console.log(str + 'need to iterate ' + Object.keys(obj));
+  } else {
+    // console.log('cannot be referenced, ' + objType);
   }
 
   if (objIterate) {
     // console.log(str + `iterating ${objType}`);
+    let savedObj = data.obj;
+    let savedObjType = data.objType;
+    let savedObjSetChild = data.objSetChild;
     data.obj = obj;
     data.objType = objType;
     data.objSetChild = objSetChild;
-    data.options = options;
     objIterate(obj, serializeElement, data);
+    data.obj = savedObj; // reset parent 
+    data.objType = savedObjType;
+    data.objSetChild = savedObjSetChild;
   }
   if (objSerialize) {
     // console.log(str + `  ${objType} serializing in place ...`);
@@ -128,9 +135,10 @@ function serialize (item, options = undefined) {
   // console.log('serialize deepCopy iCopy:',iCopy);
 
   let data = { // data to pass through recursion
-    path: ['root'],
-    objNum: 0, // keep track of number of distinct objects encountered
-    objToId: new Map() // keep track of objNum for each distinct object
+    path: ['root'],     // keep track of what level we're at in object hierarchy
+    objNum: 0,          // keep track of number of distinct objects encountered
+    objToId: new Map(), // keep track of objNum for each distinct object
+    options: options    // make options available to all processing
   };
   iCopy = serializeObject(iCopy, options, data);
 
@@ -171,18 +179,18 @@ const deserializeChildren = (obj, getCustomObject, data, objBehaviors) => {
     if (elIterate) {
       data.path.push[elInfo.key];
       elInfo.value = deserializeObject(elInfo.value, getCustomObject, data);
-      data.path.pop[elInfo.key];
+      data.path.pop();
     } else if (elDeserialize) {
       elInfo.value = elDeserialize(elInfo.value, getCustomObject, data);
-      objSetChild(obj, elInfo);
     }
+    objSetChild(obj, elInfo);
   }, data);
 };
 
 // recursively deserialize the object (breadth first)
 function deserializeObject (obj, getCustomObject, data) {
   // debug
-  // let str = '    '; for (let i = 0; i < data.depth; i++) {str += '  ';}
+  let str = '    '; for (let i = 0; i < data.path.length - 1; i++) {str += '  ';}
   // console.log(str + 'deserializeObject obj:', obj);
 
   let objType = objectType(obj, data);
@@ -195,6 +203,7 @@ function deserializeObject (obj, getCustomObject, data) {
   if (objDeserialize) {
     obj = objDeserialize(obj, getCustomObject, data);
     objType = objectType(obj, data);
+    // console.log(str + ' object type is now ' + objType + (obj ? ' with props ' + Object.keys(obj) : ''));
     objBehaviors = objectBehaviors[objType];
     if (obj?._SAId) delete obj._SAId;
   }
@@ -275,7 +284,7 @@ function analyzeForCircular(obj) {
 const isPrimitive = (item) => {
   let type = typeof item;
   return type === 'number' || type === 'string' || type === 'boolean'
-    || type === 'symbol' || item === null;
+    || type === 'symbol' || item === null || item === undefined;
 };
 
 /**
@@ -295,15 +304,15 @@ const objectType = (obj, data) => {
   let type = null;
   const consName = obj && obj.constructor && obj.constructor.name;
 
-  // match primitives right away
-  if (isPrimitive(obj) || !obj instanceof Object) {
-    type = 'primitive';
-  }
-
   // force undefined to a serializable type
   // because JSON.stringify strips out properties set to undefined
-  else if (typeof obj === 'undefined') {
+  if (typeof obj === 'undefined') {
     type = 'undef';
+  }
+
+  // match primitives right away
+  else if (isPrimitive(obj) || !obj instanceof Object) {
+    type = 'primitive';
   }
 
   // force BigInt to a serializable type
@@ -800,10 +809,13 @@ if (typeof Set !== 'undefined') {
         });
       },
       setValue: (set, elInfo) => {
-        // delete current value, then add new value
-        set.delete(elInfo.originalValue);
-        set.add(elInfo.value);
-        elInfo.originalValue = elInfo.value;
+        // delete current value, then add new value - only do this if the new value != old value
+        // delete/add while iterating set can cause infinite loop
+        if (elInfo.originalValue != elInfo.value) {
+          set.delete(elInfo.originalValue);
+          set.add(elInfo.value);
+          elInfo.originalValue = elInfo.value;
+        }
       }
     },
     "Set_Serialized": {
@@ -955,6 +967,7 @@ Object.assign(objectBehaviors, {
     // any object with a custom constructor name
     iterate: objectIterate,
     deserialize: (srcSer, getCustomObject, data) => {
+      //console.log("deserializing...");
       const cName = srcSer._SAconstructorName;
       const srcObj = srcSer._SAobject;
       // const cNameDefined = eval('typeof ' + cName + ' !== "undefined"');

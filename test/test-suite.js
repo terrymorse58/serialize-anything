@@ -14,6 +14,39 @@ function jsonTest(src) {}
 
 const tests = [];
 
+/**
+ * Helper - filter
+ * 
+ * @param iterable - a list of values
+ * @param predicate - (value) => {return true iff value should be included}
+ */
+function* filter(iterable, predicate) {
+  for (value of iterable)
+    if (predicate(value)) yield value;
+}
+
+/**
+ * Helper - checkObjectsHaveSameKeys
+ *
+ * @param expected - first obj to check
+ * @param actual - does it have the same keys?
+ * @param check - what's being checked - helpful in error message
+ * @throws error if there is a discrepency
+*/
+function checkObjectsHaveSameKeys(expected, actual, check) {
+  let obj1Keys = new Set(Object.keys(expected));
+  let obj2Keys = new Set(Object.keys(actual));
+  let in1not2 = new Set(filter(obj1Keys.keys(), (key) => !obj2Keys.has(key)));
+  let in2not1 = new Set(filter(obj2Keys.keys(), (key) => !obj1Keys.has(key)));
+
+  let errors = {checking: check};
+  
+  if (in1not2.size) errors.missing = 'expected keys missing from actual: ' + Array.from(in1not2.keys());
+  if (in2not1.size) errors.extra = 'actual contains unexpected keys: ' + Array.from(in2not1.keys());
+
+  if (errors.missing || errors.extra) throw new Error(JSON.stringify(errors));
+}
+
 // Date
 function test1(serialize, deserialize, options) {
   console.log("\nTest1 (Date):");
@@ -545,6 +578,7 @@ function test21 (serialize, deserialize, options) {
     if (typeof deser.custom !== 'function') {
       throw `Error did not maintain CustomArray method 'custom'`;
     }
+    console.log('    deser.custom(): ', deser.custom());
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test21 ' + err.toString());
@@ -649,7 +683,7 @@ function test26 (serialize, deserialize, options) {
     '        [1, \'one\'],\n' +
     '        [2, \'two\']\n' +
     '      ]),\n' +
-    '      custom: custom\n' +
+    '      custom: custom,\n' +
     '      buffer: Buffer.from(\'hello world\')\n' +
     '    };\n'
   );
@@ -671,6 +705,8 @@ function test26 (serialize, deserialize, options) {
     let deser = deserialize(ser);
     console.log('    deser:', deser);
     if (deser.map.get(1) != 'one') throw new Error('Map does not contain right value for key, "1"');
+    checkObjectsHaveSameKeys(src, deser, 'src vs. deser');
+    checkObjectsHaveSameKeys(src.custom, deser.custom, 'src.custom vs. deser.custom');
   } catch (err) {
     console.log('*** TEST FAILED:', err);
     errors.push('Test26 ' + err.toString());
@@ -707,10 +743,19 @@ tests.push(test27);
 function test28(serialize, deserialize, options) {
   console.log('\nTest28 (max depth):');
   console.log(
-  `    assertDoesNotThrow {
-      deserialize(serialize(wideObject));
-      deserialize(serialize(deepObject));
-      deserialize(serialize(extraWideObject));
+`    let wideObject = Array.from({length: options.maxDepth - 5}, (x, i) => { return new Object(); } );
+    let extraWideObject = [...wideObject, Array.from({length: 10}, (x, i) => { return new Object(); })];
+    let generateDeepObject = (deepObject) => {
+      deepObject.deepestChild = deepObject.deepestChild.child = new Object();
+      return deepObject;
+    };
+    let deepObject = wideObject.reduce(generateDeepObject, new function () { this.deepestChild = this; }() );
+    tooDeepObject = extraWideObject.reduce(generateDeepObject, new function () { this.deepestChild = this; }() );
+  
+    assertDoesNotThrow {
+      serialize(wideObject);
+      serialize(deepObject);
+      serialize(extraWideObject);
     }
     assertThrows {
       serialize(tooDeepObject);
@@ -741,8 +786,6 @@ function test28(serialize, deserialize, options) {
   } catch (err) {} // we expect to catch an error here
 }
 tests.push(test28);
-
-function makeEmptyAnonymousObject() { return new Object(); }
 
 // anonymous custom object
 function test29(serialize, deserialize, options) {

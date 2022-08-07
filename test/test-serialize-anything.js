@@ -30,8 +30,12 @@ const options = {
   pretty: true
 };
 
-// run every test
-TS.tests.forEach(test =>
+// run every test by default
+let tests = TS.tests;
+
+//tests = tests.filter((test) => { return test.name == 'test16'; });
+
+tests.forEach(test =>
   test(SerAny.serialize, SerAny.deserialize, options));
 
 console.log("\nEnd of test.");
