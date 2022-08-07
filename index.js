@@ -856,7 +856,8 @@ if (typeof Error !== 'undefined') {
         return {
           _SAType: "Error",
           _SAmessage: err.message,
-          _SAstack: err.stack
+          _SAstack: err.stack,
+          _SAcause: err.cause
         }
       }
     },
@@ -864,6 +865,7 @@ if (typeof Error !== 'undefined') {
       deserialize: (srcSer) => {
         const newErr = Error(srcSer._SAmessage);
         newErr.stack = srcSer._SAstack;
+        newErr.cause = srcSer._SAcause;
         return newErr;
       }
     }

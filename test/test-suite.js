@@ -1,3 +1,5 @@
+var semver = require('semver');
+
 const errors = [];
 
 // function jsonTest(src) {
@@ -654,16 +656,26 @@ function test25 (serialize, deserialize, options) {
   console.log(
     '  let src = new Error("this is a sample error");'
   );
-  let src = new Error('this is a sample error');
-  console.log('    src: ', src);
   try {
-    let ser = serialize(src, options);
-    console.log(`    ser:  '${ser}'`);
-    let deser = deserialize(ser);
-    console.log('    deser:', deser);
-  } catch (err) {
-    console.log('*** TEST FAILED:', err);
-    errors.push('Test25 ' + err.toString());
+    throw new Error("this is a sample cause");
+  } catch (cause) {
+    let src = new Error('this is a sample error', {cause: cause});
+    console.log('    src: ', src);
+    try {
+      let ser = serialize(src, options);
+      console.log(`    ser:  '${ser}'`);
+      let deser = deserialize(ser);
+      console.log('    deser:', deser);
+      if (semver.gte(process.version, '16.9.0')) {
+        if (!deser.cause)
+          throw new Error("No cause serialized for error");
+        if (! (deser.cause instanceof Error))
+          throw new Error("Cause is unexpected type: " + typeof deser.cause);
+      }
+    } catch (err) {
+      console.log('*** TEST FAILED:', err);
+      errors.push('Test25 ' + err.toString());
+    }  
   }
 }
 tests.push(test25);

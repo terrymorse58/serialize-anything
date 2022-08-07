@@ -1,15 +1,15 @@
 
 Test1 (Date):
   const src = new Date();
-    src:   2022-08-07T04:33:48.334Z
+    src:   2022-08-07T07:33:35.296Z
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
     "_SAType": "Date",
-    "_SAtimestamp": 1659846828334
+    "_SAtimestamp": 1659857615296
   }
 }'
-    deser: Date: Sat Aug 06 2022 21:33:48 GMT-0700 (Pacific Daylight Time)
+    deser: Date: Sun Aug 07 2022 00:33:35 GMT-0700 (Pacific Daylight Time)
 
 Test2 (Map):
   let src = new Map();
@@ -19,7 +19,7 @@ Test2 (Map):
   src.set(key2, new Date());
     src:   Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-07T04:33:48.337Z
+  { foo: 'bar' } => 2022-08-07T07:33:35.299Z
 }
     ser:  '{
   "_Serialize_Any_Encoded": true,
@@ -36,7 +36,7 @@ Test2 (Map):
         },
         {
           "_SAType": "Date",
-          "_SAtimestamp": 1659846828337
+          "_SAtimestamp": 1659857615299
         }
       ]
     ]
@@ -44,7 +44,7 @@ Test2 (Map):
 }'
     deser: Map(2) {
   'key1' => 'key1 value',
-  { foo: 'bar' } => 2022-08-07T04:33:48.337Z
+  { foo: 'bar' } => 2022-08-07T07:33:35.299Z
 }
 
 Test3 (Function):
@@ -258,7 +258,7 @@ Test15 (ArrayBuffer):
 
 Test16 (Set):
   let src = new Set([1,2,"3",{createdAt: new Date()}]);
-    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-07T04:33:48.347Z } }
+    src:  Set(4) { 1, 2, '3', { createdAt: 2022-08-07T07:33:35.316Z } }
     ser:  '{
   "_Serialize_Any_Encoded": true,
   "_SA_Content": {
@@ -270,14 +270,14 @@ Test16 (Set):
       {
         "createdAt": {
           "_SAType": "Date",
-          "_SAtimestamp": 1659846828347
+          "_SAtimestamp": 1659857615316
         },
         "_SAId": 2
       }
     ]
   }
 }'
-    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-07T04:33:48.347Z } }
+    deser: Set(4) { 1, 2, '3', { createdAt: 2022-08-07T07:33:35.316Z } }
 
 Test17 (WeakSet):
   let src = new WeakSet();
@@ -405,7 +405,32 @@ Test24 (undefined variable):
 Test25 (Error):
   let src = new Error("this is a sample error");
     src:  Error: this is a sample error
-    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:657:13)
+    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:662:15)
+    at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:39:3
+    ... 7 lines matching cause stack trace ...
+    at node:internal/main/run_main_module:17:47 {
+  [cause]: Error: this is a sample cause
+      at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:660:11)
+      at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:39:3
+      at Array.forEach (<anonymous>)
+      at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:38:7)
+      at Module._compile (node:internal/modules/cjs/loader:1105:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+      at Module.load (node:internal/modules/cjs/loader:981:32)
+      at Module._load (node:internal/modules/cjs/loader:827:12)
+      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+      at node:internal/main/run_main_module:17:47
+}
+    ser:  '{
+  "_Serialize_Any_Encoded": true,
+  "_SA_Content": {
+    "_SAType": "Error",
+    "_SAmessage": "this is a sample error",
+    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:662:15)\n    at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:39:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:38:7)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Module._load (node:internal/modules/cjs/loader:827:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47"
+  }
+}'
+    deser: Error: this is a sample error
+    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:662:15)
     at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:39:3
     at Array.forEach (<anonymous>)
     at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:38:7)
@@ -414,17 +439,11 @@ Test25 (Error):
     at Module.load (node:internal/modules/cjs/loader:981:32)
     at Module._load (node:internal/modules/cjs/loader:827:12)
     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
-    at node:internal/main/run_main_module:17:47
-    ser:  '{
-  "_Serialize_Any_Encoded": true,
-  "_SA_Content": {
-    "_SAType": "Error",
-    "_SAmessage": "this is a sample error",
-    "_SAstack": "Error: this is a sample error\n    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:657:13)\n    at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:39:3\n    at Array.forEach (<anonymous>)\n    at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:38:7)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Module._load (node:internal/modules/cjs/loader:827:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47"
-  }
-}'
-    deser: Error: this is a sample error
-    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:657:13)
+    at node:internal/main/run_main_module:17:47 {
+  cause: undefined
+}
+*** TEST FAILED: Error: No cause serialized for error
+    at test25 (/Users/jric/dev/patches/serialize-anything/test/test-suite.js:671:17)
     at /Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:39:3
     at Array.forEach (<anonymous>)
     at Object.<anonymous> (/Users/jric/dev/patches/serialize-anything/test/test-serialize-anything.js:38:7)
@@ -578,5 +597,6 @@ End of test.
 
 Errors:  [
   'Test17 Error: serialize WeakSet not supported',
-  'Test18 Error: serialize WeakMap not supported'
+  'Test18 Error: serialize WeakMap not supported',
+  'Test25 Error: No cause serialized for error'
 ]
